@@ -1,0 +1,592 @@
+{
+  "categories": [
+    {
+      "id": "1",
+      "code": "k:tisort",
+      "title": "Tişört",
+      "img": "https://workintech-fe-ecommerce.onrender.com/assets/category-img/category_kadın_tişört.jpg",
+      "rating": 4.2,
+      "gender": "k"
+    },
+    {
+      "id": "2",
+      "code": "k:ayakkabi",
+      "title": "Ayakkabı",
+      "img": "https://workintech-fe-ecommerce.onrender.com/assets/category-img/category_kadın_ayakkabı.jpg",
+      "rating": 4.9,
+      "gender": "k"
+    },
+    {
+      "id": "3",
+      "code": "k:ceket",
+      "title": "Ceket",
+      "img": "https://workintech-fe-ecommerce.onrender.com/assets/category-img/category_kadın_ceket.jpg",
+      "rating": 3.8,
+      "gender": "k"
+    },
+    {
+      "id": "4",
+      "code": "k:elbise",
+      "title": "Elbise",
+      "img": "https://workintech-fe-ecommerce.onrender.com/assets/category-img/category_kadın_elbise.jpg",
+      "rating": 4.1,
+      "gender": "k"
+    },
+    {
+      "id": "5",
+      "code": "k:etek",
+      "title": "Etek",
+      "img": "https://workintech-fe-ecommerce.onrender.com/assets/category-img/category_kadın_etek.jpg",
+      "rating": 3.9,
+      "gender": "k"
+    },
+    {
+      "id": "6",
+      "code": "k:gomlek",
+      "title": "Gömlek",
+      "img": "https://workintech-fe-ecommerce.onrender.com/assets/category-img/category_kadın_gömlek.jpg",
+      "rating": 3.1,
+      "gender": "k"
+    },
+    {
+      "id": "7",
+      "code": "k:kazak",
+      "title": "Kazak",
+      "img": "https://workintech-fe-ecommerce.onrender.com/assets/category-img/category_kadın_kazak.jpg",
+      "rating": 2.9,
+      "gender": "k"
+    },
+    {
+      "id": "8",
+      "code": "k:pantalon",
+      "title": "Pantalon",
+      "img": "https://workintech-fe-ecommerce.onrender.com/assets/category-img/category_kadın_pantalon.jpg",
+      "rating": 3.8,
+      "gender": "k"
+    },
+    {
+      "id": "9",
+      "code": "e:ayakkabı",
+      "title": "Ayakkabı",
+      "img": "https://workintech-fe-ecommerce.onrender.com/assets/category-img/category_erkek_ayakkabı.jpg",
+      "rating": 4.6,
+      "gender": "e"
+    },
+    {
+      "id": "10",
+      "code": "e:ceket",
+      "title": "Ceket",
+      "img": "https://workintech-fe-ecommerce.onrender.com/assets/category-img/category_erkek_ceket.jpg",
+      "rating": 4.1,
+      "gender": "e"
+    },
+    {
+      "id": "11",
+      "code": "e:gomlek",
+      "title": "Gömlek",
+      "img": "https://workintech-fe-ecommerce.onrender.com/assets/category-img/category_erkek_gömlek.jpg",
+      "rating": 3.9,
+      "gender": "e"
+    },
+    {
+      "id": "12",
+      "code": "e:kazak",
+      "title": "Kazak",
+      "img": "https://workintech-fe-ecommerce.onrender.com/assets/category-img/category_erkek_kazak.jpg",
+      "rating": 3.2,
+      "gender": "e"
+    },
+    {
+      "id": "13",
+      "code": "e:pantalon",
+      "title": "Pantalon",
+      "img": "https://workintech-fe-ecommerce.onrender.com/assets/category-img/category_erkek_pantalon.jpg",
+      "rating": 3.5,
+      "gender": "e"
+    },
+    {
+      "id": "14",
+      "code": "e:tisort",
+      "title": "Tişört",
+      "img": "https://workintech-fe-ecommerce.onrender.com/assets/category-img/category_erkek_tişört.jpg",
+      "rating": 4.3,
+      "gender": "e"
+    }
+  ],
+  "roles": [
+    {
+      "id": "1",
+      "name": "Yönetici",
+      "code": "admin"
+    },
+    {
+      "id": "2",
+      "name": "Mağaza",
+      "code": "store"
+    },
+    {
+      "id": "3",
+      "name": "Müşteri",
+      "code": "customer"
+    }
+  ],
+  "products": [
+    {
+      "id": "2",
+      "name": "Siyah %100 Pamuk",
+      "description": "Siyah %100 Pamuk Regular/Normal Kalıp Basic V Yaka Uzun Kollu Örme T-Shirt TWOAW21TS0099",
+      "price": 145.99,
+      "stock": 84,
+      "store_id": 1,
+      "category_id": 1,
+      "rating": 4.35,
+      "sell_count": 923,
+      "images": [
+        {
+          "url": "https://cdn.dsmcdn.com/ty155/product/media/images/20210806/13/116221695/81629339/1/1_org_zoom.jpg",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "name": "Beyaz %100 Pamuk",
+      "description": "Beyaz %100 Pamuk Regular/Normal Kalıp Basic V Yaka Uzun Kollu Örme T-Shirt TWOAW21TS0099",
+      "price": 140.99,
+      "stock": 80,
+      "store_id": 1,
+      "category_id": 1,
+      "rating": 4.39,
+      "sell_count": 48,
+      "images": [
+        {
+          "url": "https://cdn.dsmcdn.com/ty155/product/media/images/20210806/13/116221695/81629339/1/1_org_zoom.jpg",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "name": "Çocuk Kırmızı Türk",
+      "description": "Çocuk Kırmızı Türk Bayraklı T-shirt",
+      "price": 64.49,
+      "stock": 180,
+      "store_id": 1,
+      "category_id": 1,
+      "rating": 4.07,
+      "sell_count": 633,
+      "images": [
+        {
+          "url": "https://cdn.dsmcdn.com/ty563/product/media/images/20221013/13/192656071/81629346/2/2_org_zoom.jpg",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "5",
+      "name": "Unisex Çocuk Atatürk",
+      "description": "Unisex Çocuk Atatürk Baskılı T-shirt",
+      "price": 89.9,
+      "stock": 54,
+      "store_id": 1,
+      "category_id": 1,
+      "rating": 4.16,
+      "sell_count": 837,
+      "images": [
+        {
+          "url": "https://cdn.dsmcdn.com/ty1016/product/media/images/prod/SPM/PIM/20231017/01/91843006-2534-37f6-bfc1-1e8a9df5dc3b/1_org_zoom.jpg",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "6",
+      "name": "Atatürk Baskılı T-shirt",
+      "description": "Atatürk Baskılı T-shirt",
+      "price": 89,
+      "stock": 69,
+      "store_id": 1,
+      "category_id": 1,
+      "rating": 4.44,
+      "sell_count": 777,
+      "images": [
+        {
+          "url": "https://cdn.dsmcdn.com/ty1015/product/media/images/prod/SPM/PIM/20231016/21/77dd3d28-ce34-315f-8230-d7e9ad54c384/1_org_zoom.jpg",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "7",
+      "name": "Çocuk Sarı ",
+      "description": "Çocuk Sarı  Unisex Atatürk Baskılı T-shirt",
+      "price": 159,
+      "stock": 188,
+      "store_id": 1,
+      "category_id": 1,
+      "rating": 4.6,
+      "sell_count": 764,
+      "images": [
+        {
+          "url": "https://cdn.dsmcdn.com/ty432/product/media/images/20220514/21/111571682/265579388/1/1_org_zoom.jpg",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "8",
+      "name": "Çocuk Kırmızı Türk",
+      "description": "Çocuk Kırmızı Türk Bayraklı T-shirt",
+      "price": 118,
+      "stock": 138,
+      "store_id": 1,
+      "category_id": 1,
+      "rating": 4.43,
+      "sell_count": 511,
+      "images": [
+        {
+          "url": "https://cdn.dsmcdn.com/ty1003/product/media/images/prod/SPM/PIM/20230925/21/c0cbda9a-be53-34af-81bc-5c16e6f9639c/1_org_zoom.jpg",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "9",
+      "name": "Unisex Çocuk Atatürk",
+      "description": "Unisex Çocuk Atatürk Baskılı T-shirt",
+      "price": 119.9,
+      "stock": 160,
+      "store_id": 1,
+      "category_id": 1,
+      "rating": 4.05,
+      "sell_count": 659,
+      "images": [
+        {
+          "url": "https://cdn.dsmcdn.com/ty1015/product/media/images/prod/SPM/PIM/20231016/21/5f1e48c7-e257-3912-a572-72595ecde646/1_org_zoom.jpg",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "10",
+      "name": "Minimal Kalp Baskılı",
+      "description": "Minimal Kalp Baskılı Siyah Oversize Tshirt",
+      "price": 59,
+      "stock": 126,
+      "store_id": 1,
+      "category_id": 1,
+      "rating": 4.71,
+      "sell_count": 116,
+      "images": [
+        {
+          "url": "https://cdn.dsmcdn.com/ty1016/product/media/images/prod/SPM/PIM/20231016/21/3b935873-5b34-3a43-aa23-f59ce5a0af6c/1_org_zoom.jpg",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "11",
+      "name": "Minimal Kalp Baskılı",
+      "description": "Minimal Kalp Baskılı Oversize Tshirt",
+      "price": 84,
+      "stock": 161,
+      "store_id": 1,
+      "category_id": 1,
+      "rating": 4.62,
+      "sell_count": 669,
+      "images": [
+        {
+          "url": "https://cdn.dsmcdn.com/ty1003/product/media/images/prod/SPM/PIM/20230924/16/3d7bac93-23ad-3228-a557-438664f6633f/1_org_zoom.jpg",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "12",
+      "name": "Minimal Kalp Baskılı",
+      "description": "Minimal Kalp Baskılı Beyaz Oversize Tshirt",
+      "price": 69,
+      "stock": 38,
+      "store_id": 1,
+      "category_id": 1,
+      "rating": 4.76,
+      "sell_count": 543,
+      "images": [
+        {
+          "url": "https://cdn.dsmcdn.com/ty468/product/media/images/20220707/5/136455588/515844285/1/1_org_zoom.jpg",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "13",
+      "name": "Minimal Kalp Baskılı",
+      "description": "Minimal Kalp Baskılı Oversize Tshirt.",
+      "price": 59.99,
+      "stock": 156,
+      "store_id": 1,
+      "category_id": 1,
+      "rating": 4.89,
+      "sell_count": 386,
+      "images": [
+        {
+          "url": "https://cdn.dsmcdn.com/ty1008/product/media/images/prod/SPM/PIM/20231005/20/c48c84de-5ca8-35a4-a0fc-283c7a923924/1_org_zoom.jpg",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "14",
+      "name": "Minimal Kalp Baskılı",
+      "description": "Minimal Kalp Baskılı Oversize Tshirt",
+      "price": 54.28,
+      "stock": 51,
+      "store_id": 1,
+      "category_id": 1,
+      "rating": 4.22,
+      "sell_count": 211,
+      "images": [
+        {
+          "url": "https://cdn.dsmcdn.com/ty1004/product/media/images/prod/SPM/PIM/20230921/16/1ab57174-c481-3350-9808-84f7b7415c9e/1_org_zoom.jpg",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "15",
+      "name": "Minimal Kalp Baskılı",
+      "description": "Minimal Kalp Baskılı Siyah Oversize Tshirt",
+      "price": 85,
+      "stock": 56,
+      "store_id": 1,
+      "category_id": 1,
+      "rating": 4.42,
+      "sell_count": 686,
+      "images": [
+        {
+          "url": "https://cdn.dsmcdn.com/ty900/product/media/images/20230523/16/356806190/516079941/1/1_org_zoom.jpg",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "16",
+      "name": "Minimal Kalp Baskılı",
+      "description": "Minimal Kalp Baskılı Acık Kahverengi Oversize Tshirt",
+      "price": 89,
+      "stock": 21,
+      "store_id": 1,
+      "category_id": 1,
+      "rating": 4.59,
+      "sell_count": 19,
+      "images": [
+        {
+          "url": "https://cdn.dsmcdn.com/ty1008/product/media/images/prod/SPM/PIM/20231005/20/bfd0256c-7516-3012-8cb6-03213393416e/1_org_zoom.jpg",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "17",
+      "name": "Kadın Pembe Önü",
+      "description": "Kadın Pembe Önü Şef Kedi Baskılı Bisiklet Yaka Oversize Pamuklu T-shirt",
+      "price": 89,
+      "stock": 173,
+      "store_id": 1,
+      "category_id": 1,
+      "rating": 4.5,
+      "sell_count": 625,
+      "images": [
+        {
+          "url": "https://cdn.dsmcdn.com/ty975/product/media/images/20230802/18/399570011/978024632/1/1_org_zoom.jpg",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "18",
+      "name": "Unisex Rahat Kesim",
+      "description": "Unisex Rahat Kesim Mor Kelebek Oversize T-shirt",
+      "price": 89,
+      "stock": 104,
+      "store_id": 1,
+      "category_id": 1,
+      "rating": 4.71,
+      "sell_count": 640,
+      "images": [
+        {
+          "url": "https://cdn.dsmcdn.com/ty591/product/media/images/20221107/9/209028202/528938378/1/1_org_zoom.jpg",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "19",
+      "name": "Unisex Kelebek Rahat",
+      "description": "Unisex Kelebek Rahat Kesim Oversize T-shirt",
+      "price": 79.9,
+      "stock": 85,
+      "store_id": 1,
+      "category_id": 1,
+      "rating": 4.64,
+      "sell_count": 929,
+      "images": [
+        {
+          "url": "https://cdn.dsmcdn.com/ty811/product/media/images/20230403/17/317678439/903049358/1/1_org_zoom.jpg",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "20",
+      "name": "Kadın Beyaz Ördek",
+      "description": "Kadın Beyaz Ördek Baskılı Bisiklet Yaka Oversize Pamuklu T-shirt",
+      "price": 69,
+      "stock": 191,
+      "store_id": 1,
+      "category_id": 1,
+      "rating": 4.84,
+      "sell_count": 141,
+      "images": [
+        {
+          "url": "https://cdn.dsmcdn.com/ty812/product/media/images/20230403/17/317679057/903050277/1/1_org_zoom.jpg",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "21",
+      "name": "Unisex Baskı Detaylı",
+      "description": "Unisex Baskı Detaylı Oversize Basit T-Shirt",
+      "price": 69,
+      "stock": 6,
+      "store_id": 1,
+      "category_id": 1,
+      "rating": 4.81,
+      "sell_count": 868,
+      "images": [
+        {
+          "url": "https://cdn.dsmcdn.com/ty591/product/media/images/20221107/9/209028179/490615950/1/1_org_zoom.jpg",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "22",
+      "name": "Unisex Baskı Detaylı",
+      "description": "Unisex Baskı Detaylı Oversize Basit T-Shirt",
+      "price": 139,
+      "stock": 166,
+      "store_id": 1,
+      "category_id": 1,
+      "rating": 3.94,
+      "sell_count": 826,
+      "images": [
+        {
+          "url": "https://cdn.dsmcdn.com/ty997/product/media/images/prod/SPM/PIM/20230909/03/f306496e-6311-3dc3-a909-79746c268aa0/1_org_zoom.jpg",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "23",
+      "name": "Kadın Siyah Önü",
+      "description": "Kadın Siyah Önü Maskeli Kedi Baskılı Bisiklet Yaka Oversize Pamuklu T-shirt",
+      "price": 59,
+      "stock": 197,
+      "store_id": 1,
+      "category_id": 1,
+      "rating": 4.94,
+      "sell_count": 259,
+      "images": [
+        {
+          "url": "https://cdn.dsmcdn.com/ty969/product/media/images/20230720/14/395233234/980330978/1/1_org_zoom.jpg",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "24",
+      "name": "Unisex Baskı Detaylı",
+      "description": "Unisex Baskı Detaylı Oversize Basit T-Shirt",
+      "price": 99,
+      "stock": 39,
+      "store_id": 1,
+      "category_id": 1,
+      "rating": 4.24,
+      "sell_count": 649,
+      "images": [
+        {
+          "url": "https://cdn.dsmcdn.com/ty592/product/media/images/20221107/9/209028576/528937888/1/1_org_zoom.jpg",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "25",
+      "name": "Unisex Alpha Rahat",
+      "description": "Unisex Alpha Rahat Kesim Oversize T-shirt",
+      "price": 75,
+      "stock": 168,
+      "store_id": 1,
+      "category_id": 1,
+      "rating": 4.55,
+      "sell_count": 967,
+      "images": [
+        {
+          "url": "https://cdn.dsmcdn.com/ty970/product/media/images/20230720/14/395233273/980331058/1/1_org_zoom.jpg",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "26",
+      "name": "Kadın Mor Önü",
+      "description": "Kadın Mor Önü Scooter Baskılı Bisiklet Yaka Oversize Pamuklu T-shirt",
+      "price": 67.3,
+      "stock": 76,
+      "store_id": 1,
+      "category_id": 1,
+      "rating": 4.29,
+      "sell_count": 564,
+      "images": [
+        {
+          "url": "https://cdn.dsmcdn.com/ty812/product/media/images/20230403/17/317678770/903049929/1/1_org_zoom.jpg",
+          "index": 0
+        }
+      ]
+    }
+  ],
+  "login": [
+    {
+      "id": "1",
+      "name": "Test Customer",
+      "email": "customer@commerce.com",
+      "password": "123456",
+      "token": "mock-json-server-token-customer-123456",
+      "role_id": "customer"
+    },
+    {
+      "id": "2",
+      "name": "Elif Yüksek",
+      "email": "elif@elifshop.com",
+      "password": "123456",
+      "token": "mock-json-server-token-elif-12345",
+      "role_id": "customer"
+    }
+  ],
+  "verify": [
+    {
+      "id": "1",
+      "name": "Test Customer",
+      "email": "customer@commerce.com",
+      "token": "mock-json-server-token-customer-123456",
+      "role_id": "customer"
+    }
+  ],
+  "signup": [],
+  "address": [],
+  "card": [],
+  "order": [],
+  "$schema": "./node_modules/json-server/schema.json"
+}
