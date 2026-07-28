@@ -5,9 +5,9 @@ COPY pom.xml .
 COPY src ./src
 RUN mvn clean package -DskipTests
 
-# 2. Aşama: Çalıştırma ortamı (Güncel Temurin Java 17)
+# 2. Aşama: Çalıştırma ortamı
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Dserver.port=${PORT:-8080}", "-jar", "app.jar"]
