@@ -3,6 +3,7 @@ import axios from 'axios';
 
 export const API = axios.create({
   baseURL: 'https://ecommerce-ey-backend.onrender.com',
+            
 });
 
 API.interceptors.request.use(

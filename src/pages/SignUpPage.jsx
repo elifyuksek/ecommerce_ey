@@ -5,6 +5,7 @@ import { API } from '../api/api';
 export default function SignUpPage() {
   const [roles, setRoles] = useState([]);
   const [isLoadingRoles, setIsLoadingRoles] = useState(true);
+  const [rolesFetchError, setRolesFetchError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [apiError, setApiError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
@@ -13,37 +14,49 @@ export default function SignUpPage() {
     register,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors }
   } = useForm({
     defaultValues: {
-      role_id: '3' 
+      role_id: ''
     }
   });
 
   const selectedRoleId = watch('role_id');
-  
   const password = watch('password');
 
   useEffect(() => {
+    setIsLoadingRoles(true);
     API.get('/roles')
       .then((res) => {
-        setRoles(res.data);
+        const fetchedRoles = res.data || [];
+        setRoles(fetchedRoles);
         setIsLoadingRoles(false);
         
-        const customerRole = res.data.find(role => role.code.toLowerCase() === 'customer');
+        const customerRole = fetchedRoles.find(
+          role => (role.code && role.code.toLowerCase() === 'customer') || 
+                  (role.name && role.name.toLowerCase() === 'customer')
+        );
+
         if (customerRole) {
+          setValue('role_id', String(customerRole.id));
+        } else if (fetchedRoles.length > 0) {
+          setValue('role_id', String(fetchedRoles[0].id));
         }
       })
       .catch((err) => {
         console.error('Roles fetch error:', err);
+        setRolesFetchError('Failed to load user roles. Please check CORS/backend settings.');
         setIsLoadingRoles(false);
       });
-  }, []);
+  }, [setValue]);
 
-  const isStoreSelected = () => {
-    const activeRole = roles.find(r => String(r.id) === String(selectedRoleId));
-    return activeRole && activeRole.code.toLowerCase() === 'store';
-  };
+  
+  const activeRole = roles.find(r => String(r.id) === String(selectedRoleId));
+  const isStore = activeRole && (
+    (activeRole.code && activeRole.code.toLowerCase() === 'store') ||
+    (activeRole.name && activeRole.name.toLowerCase() === 'store')
+  );
 
   const onSubmit = (data) => {
     setIsSubmitting(true);
@@ -57,7 +70,7 @@ export default function SignUpPage() {
       role_id: Number(data.role_id)
     };
 
-    if (isStoreSelected()) {
+    if (isStore) {
       payload.store = {
         name: data.storeName,
         phone: data.storePhone,
@@ -69,14 +82,14 @@ export default function SignUpPage() {
     API.post('/signup', payload)
       .then((res) => {
         setIsSubmitting(false);
-        setSuccessMessage('You need to click link in email to activate your account!');
+        setSuccessMessage('Account created successfully! Redirecting...');
         
         setTimeout(() => {
           window.history.back();
           setTimeout(() => {
             window.dispatchEvent(new Event('navigationChange'));
           }, 100);
-        }, 3000);
+        }, 2000);
       })
       .catch((err) => {
         setIsSubmitting(false);
@@ -102,6 +115,11 @@ export default function SignUpPage() {
         {apiError && (
           <div className="p-4 bg-red-50 border border-red-200 text-red-700 text-sm font-bold rounded-md">
             {apiError}
+          </div>
+        )}
+        {rolesFetchError && (
+          <div className="p-3 bg-amber-50 border border-amber-200 text-amber-800 text-xs font-bold rounded-md">
+            {rolesFetchError}
           </div>
         )}
 
@@ -145,11 +163,7 @@ export default function SignUpPage() {
               placeholder="At least 8 characters"
               {...register('password', { 
                 required: 'Password is required',
-                minLength: { value: 8, message: 'Password must be at least 8 characters' },
-                pattern: {
-                  value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&._-])[A-Za-z\d@$!%*?&._-]{8,}$/,
-                  message: 'Must contain at least 1 uppercase, 1 lowercase, 1 number, and 1 special character'
-                }
+                minLength: { value: 8, message: 'Password must be at least 8 characters' }
               })}
               className="border border-[#E6E6E6] rounded-md px-4 py-3 text-sm focus:outline-none focus:border-[#23A6F0]"
             />
@@ -181,7 +195,7 @@ export default function SignUpPage() {
               >
                 {roles.map((role) => (
                   <option key={role.id} value={role.id}>
-                    {role.name}
+                    {role.name || role.code}
                   </option>
                 ))}
               </select>
@@ -189,7 +203,7 @@ export default function SignUpPage() {
             {errors.role_id && <span className="text-xs text-red-500 font-bold">{errors.role_id.message}</span>}
           </div>
 
-          {isStoreSelected() && (
+          {isStore && (
             <div className="flex flex-col gap-4 border-l-4 border-[#23A6F0] pl-4 py-2 my-2 bg-sky-50/30 rounded-r-md">
               <h3 className="text-sm font-bold text-[#23A6F0]">Store Information</h3>
 
@@ -213,11 +227,7 @@ export default function SignUpPage() {
                   type="text" 
                   placeholder="+905XXXXXXXXX"
                   {...register('storePhone', { 
-                    required: 'Store Phone is required',
-                    pattern: {
-                      value: /^((\+|00)?90|0)?5[0-9]{9}$/,
-                      message: 'Please enter a valid Türkiye phone number (e.g. 05XXXXXXXXX)'
-                    }
+                    required: 'Store Phone is required'
                   })}
                   className="border border-[#E6E6E6] bg-white rounded-md px-4 py-3 text-sm focus:outline-none focus:border-[#23A6F0]"
                 />
@@ -230,11 +240,7 @@ export default function SignUpPage() {
                   type="text" 
                   placeholder="TXXXXVXXXXXX"
                   {...register('storeTaxNo', { 
-                    required: 'Store Tax ID is required',
-                    pattern: {
-                      value: /^T\d{4}V\d{6}$/,
-                      message: 'Tax ID must match "TXXXXVXXXXXX" format (e.g. T1234V567890)'
-                    }
+                    required: 'Store Tax ID is required'
                   })}
                   className="border border-[#E6E6E6] bg-white rounded-md px-4 py-3 text-sm focus:outline-none focus:border-[#23A6F0]"
                 />
@@ -247,11 +253,7 @@ export default function SignUpPage() {
                   type="text" 
                   placeholder="TRXX XXXX XXXX XXXX XXXX XXXX XX"
                   {...register('storeBankAccount', { 
-                    required: 'IBAN is required',
-                    pattern: {
-                      value: /^TR\d{2}\s?(?:\d{4}\s?){5}\d{2}$/,
-                      message: 'Please enter a valid Türkiye IBAN address'
-                    }
+                    required: 'IBAN is required'
                   })}
                   className="border border-[#E6E6E6] bg-white rounded-md px-4 py-3 text-sm focus:outline-none focus:border-[#23A6F0]"
                 />
@@ -266,12 +268,6 @@ export default function SignUpPage() {
             className={`w-full text-white font-bold text-sm py-4 rounded-md transition-all flex items-center justify-center gap-2 mt-4 
               ${isSubmitting ? 'bg-[#A3D9F9] cursor-not-allowed' : 'bg-[#23A6F0] hover:bg-sky-600'}`}
           >
-            {isSubmitting && (
-              <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-            )}
             {isSubmitting ? 'Submitting...' : 'Sign Up'}
           </button>
 
