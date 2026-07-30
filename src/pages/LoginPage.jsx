@@ -40,14 +40,12 @@ export default function LoginPage() {
       loginUserAction(
         credentials,
         data.rememberMe,
-        // Başarılı giriş callback'i
         () => {
           setIsSubmitting(false);
           showToast('Login successful! Redirecting...', 'success');
           window.history.pushState({}, '', '/');
           window.dispatchEvent(new PopStateEvent('popstate'));
         },
-        // Hatalı giriş callback'i
         (errorMsg) => {
           setIsSubmitting(false);
           showToast(errorMsg || 'Invalid email or password!', 'error');
@@ -59,7 +57,6 @@ export default function LoginPage() {
   return (
     <div className="w-full min-h-screen bg-[#FAFAFA] flex items-center justify-center py-12 px-6 relative overflow-hidden">
       
-      {/* TOASTER (BİLDİRİM KUTUSU) */}
       {toast.show && (
         <div className={`fixed top-24 right-6 z-50 p-4 rounded-md shadow-md border text-sm font-bold transition-all duration-300 flex items-center gap-2 animate-bounce
           ${toast.type === 'success' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-red-50 text-red-700 border-red-200'}`}
@@ -77,7 +74,6 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
           
-          {/* E-POSTA ALANI */}
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-bold text-[#252B42] uppercase">Email</label>
             <input 
@@ -95,7 +91,6 @@ export default function LoginPage() {
             {errors.email && <span className="text-xs text-red-500 font-bold">{errors.email.message}</span>}
           </div>
 
-          {/* ŞİFRE ALANI */}
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-bold text-[#252B42] uppercase">Password</label>
             <input 
@@ -107,7 +102,6 @@ export default function LoginPage() {
             {errors.password && <span className="text-xs text-red-500 font-bold">{errors.password.message}</span>}
           </div>
 
-          {/* BENİ HATIRLA SEÇENEĞİ */}
           <div className="flex items-center gap-2 py-1">
             <input 
               type="checkbox" 
@@ -120,7 +114,6 @@ export default function LoginPage() {
             </label>
           </div>
 
-          {/* GİRİŞ BUTONU */}
           <button 
             type="submit" 
             disabled={isSubmitting}

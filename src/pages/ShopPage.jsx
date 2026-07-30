@@ -6,23 +6,19 @@ import ProductCard from '../components/ProductCard';
 export default function ShopPage({ onProductSelect }) {
   const dispatch = useDispatch();
 
-  // Redux Store verileri
   const categoriesFromStore = useSelector((state) => state.product.categories) || [];
   const productList = useSelector((state) => state.product.productList) || [];
   const totalProducts = useSelector((state) => state.product.total) || 0;
   const fetchState = useSelector((state) => state.product.fetchState);
 
-  // --- T14 & T15 FILTRELEME, SIRALAMA VE PAGINATION STATE'LERI ---
   const [filterInput, setFilterInput] = useState(''); 
   const [activeFilter, setActiveFilter] = useState(''); 
   const [sortOption, setSortOption] = useState(''); 
   const [categoryId, setCategoryId] = useState(null); 
 
-  // Pagination Ayarları
   const [currentPage, setCurrentPage] = useState(1);
-  const limit = 25; // Sayfa başına gösterilecek ürün limiti
+  const limit = 25; 
 
-  // URL değiştiğinde kategori id'sini extract etme ve Sayfayı 1'e sıfırlama
   useEffect(() => {
     const parseUrlParams = () => {
       const pathSegments = window.location.pathname.split('/');
@@ -32,7 +28,6 @@ export default function ShopPage({ onProductSelect }) {
       } else {
         setCategoryId(null);
       }
-      // Kategori değiştiğinde her zaman 1. sayfadan başla
       setCurrentPage(1);
     };
 
@@ -47,16 +42,13 @@ export default function ShopPage({ onProductSelect }) {
     };
   }, []);
 
-  // --- T15 REMARKABLE POINT: Parametrelerden biri (Page dahil) değiştiğinde tetiklenen API isteği ---
   useEffect(() => {
     const offset = (currentPage - 1) * limit;
     dispatch(fetchProductsAction(categoryId, activeFilter, sortOption, limit, offset));
   }, [dispatch, categoryId, activeFilter, sortOption, currentPage]);
 
-  // Toplam sayfa sayısını hesaplama
   const totalPages = Math.ceil(totalProducts / limit) || 1;
 
-  // En popüler 5 kategori
   const topCategories = [...categoriesFromStore]
     .sort((a, b) => b.rating - a.rating)
     .slice(0, 5);
@@ -80,26 +72,24 @@ export default function ShopPage({ onProductSelect }) {
   const handleFilterSubmit = (e) => {
     e.preventDefault();
     setActiveFilter(filterInput);
-    setCurrentPage(1); // Filtre değişince 1. sayfaya dön
+    setCurrentPage(1); 
   };
 
   const handleSortChange = (e) => {
     setSortOption(e.target.value);
-    setCurrentPage(1); // Sıralama değişince 1. sayfaya dön
+    setCurrentPage(1); 
   };
 
-  // Sayfa değiştirme fonksiyonu
   const handlePageChange = (pageNumber) => {
     if (pageNumber >= 1 && pageNumber <= totalPages) {
       setCurrentPage(pageNumber);
-      window.scrollTo({ top: 0, behavior: 'smooth' }); // Sayfa değişince yukarı kaydır
+      window.scrollTo({ top: 0, behavior: 'smooth' }); 
     }
   };
 
   return (
     <div className="w-full flex flex-col gap-12 pb-16 bg-white">
       
-      {/* 1. BREADCRUMB */}
       <div className="w-full bg-[#FAFAFA] py-6 px-6 md:px-8">
         <div className="w-full max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
           <h2 className="text-2xl font-bold text-[#252B42]">Shop</h2>
@@ -114,7 +104,6 @@ export default function ShopPage({ onProductSelect }) {
         </div>
       </div>
 
-      {/* 2. TOP 5 KATEGORİ */}
       <div className="w-full max-w-7xl mx-auto px-6 md:px-8">
         {topCategories.length === 0 ? (
           <div className="text-center py-12 text-[#737373] font-bold">Popular categories loading...</div>
@@ -142,7 +131,6 @@ export default function ShopPage({ onProductSelect }) {
         )}
       </div>
 
-      {/* 3. FİLTRELEME VE ARAMA BARI */}
       <div className="w-full max-w-7xl mx-auto px-6 md:px-8 py-4">
         <div className="w-full flex flex-col lg:flex-row justify-between items-center gap-6 text-sm font-bold text-[#737373]">
           <div>
@@ -180,7 +168,6 @@ export default function ShopPage({ onProductSelect }) {
         </div>
       </div>
 
-      {/* 4. ÜRÜN LİSTELEME VE SPINNER BÖLÜMÜ */}
       <section className="w-full max-w-7xl mx-auto px-6 md:px-8 min-h-[300px] flex items-center justify-center">
         {fetchState === 'FETCHING' ? (
           <div className="flex flex-col items-center justify-center gap-4 py-12">
@@ -210,11 +197,9 @@ export default function ShopPage({ onProductSelect }) {
         )}
       </section>
 
-      {/* 5. DİNAMİK PAGINATION BUTONLARI (T15 Geliştirmesi) */}
       {totalPages > 1 && (
         <div className="w-full flex justify-center py-8">
           <div className="flex border border-[#E8E8E8] rounded-md overflow-hidden font-bold text-sm shadow-sm select-none">
-            {/* First Butonu */}
             <button 
               disabled={currentPage === 1}
               onClick={() => handlePageChange(1)}
@@ -223,7 +208,6 @@ export default function ShopPage({ onProductSelect }) {
               First
             </button>
 
-            {/* Dinamik Sayfa Numaraları */}
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
               <button
                 key={page}
@@ -235,7 +219,6 @@ export default function ShopPage({ onProductSelect }) {
               </button>
             ))}
 
-            {/* Next Butonu */}
             <button 
               disabled={currentPage === totalPages}
               onClick={() => handlePageChange(currentPage + 1)}
@@ -247,7 +230,6 @@ export default function ShopPage({ onProductSelect }) {
         </div>
       )}
 
-      {/* 6. LOGOLAR */}
       <section className="w-full bg-[#FAFAFA] py-12 px-6 md:px-8 mt-6">
         <div className="w-full max-w-7xl mx-auto flex flex-wrap items-center justify-center lg:justify-between gap-10 md:gap-16 opacity-60">
           <span className="text-3xl font-extrabold tracking-tight text-[#737373]">hooli</span>

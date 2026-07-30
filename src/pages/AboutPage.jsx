@@ -17,7 +17,6 @@ export default function AboutPage() {
   return (
     <div className="w-full flex flex-col bg-white">
       
-      {/* 1. HERO SECTION */}
       <section className="w-full max-w-7xl mx-auto px-6 md:px-8 py-12 md:py-20 flex flex-col md:flex-row items-center gap-12">
         <div className="w-full md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left gap-6">
           <span className="text-sm font-bold text-[#252B42] tracking-wider uppercase hidden md:inline">About Company</span>
@@ -32,7 +31,6 @@ export default function AboutPage() {
           </button>
         </div>
 
-        {/* Sağ Alışveriş Yapan Kadın Görseli */}
         <div className="w-full md:w-1/2 flex justify-center relative">
           <div className="absolute w-[280px] h-[280px] sm:w-[420px] sm:h-[420px] bg-[#FFEBEB] rounded-full -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
           <img 
@@ -43,7 +41,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* 2. PROBLEMS TRYING SECTION */}
       <section className="w-full max-w-7xl mx-auto px-6 md:px-8 py-16 flex flex-col md:flex-row items-center justify-between gap-8">
         <div className="w-full md:w-2/5 flex flex-col gap-3">
           <span className="text-sm text-[#E74040] font-bold">Problems trying</span>
@@ -56,7 +53,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* 3. STATS SECTION */}
       <section className="w-full max-w-7xl mx-auto px-6 md:px-8 py-12 flex flex-col sm:flex-row flex-wrap justify-around items-center gap-12 text-center">
         {stats.map((stat, idx) => (
           <div key={idx} className="flex flex-col gap-2 min-w-[150px]">
@@ -66,7 +62,6 @@ export default function AboutPage() {
         ))}
       </section>
 
-      {/* 4. VIDEO PREVIEW AREA (Dağ manzarası & Play Butonu) */}
       <section className="w-full max-w-7xl mx-auto px-6 md:px-8 py-16">
         <div className="w-full aspect-video md:h-[540px] bg-gray-100 rounded-2xl overflow-hidden relative flex items-center justify-center shadow-lg">
           <img 
@@ -74,7 +69,6 @@ export default function AboutPage() {
             alt="Video mountain view" 
             className="w-full h-full object-cover"
           />
-          {/* Mavi Yuvarlak Play Butonu */}
           <button className="absolute z-10 w-20 h-20 bg-[#23A6F0] text-white rounded-full flex items-center justify-center hover:scale-105 transition-transform shadow-md focus:outline-none">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8 ml-1">
               <path fillRule="evenodd" d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z" clipRule="evenodd" />
@@ -83,7 +77,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* 5. TEAM SECTION */}
       <section className="w-full bg-white py-16 px-6 md:px-8">
         <div className="w-full max-w-7xl mx-auto flex flex-col items-center gap-12">
           <div className="text-center flex flex-col gap-3">
@@ -116,7 +109,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* 6. PARTNERS SECTION */}
       <section className="w-full bg-[#FAFAFA] py-16 px-6 md:px-8 text-center flex flex-col items-center gap-10">
         <div className="flex flex-col gap-3">
           <h2 className="text-3xl font-bold text-[#252B42]">Big Companies Are Here</h2>
@@ -135,9 +127,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* 7. WORK WITH US SECTION (Mavi ve Pembe Asimetrik Blok) */}
       <section className="w-full flex flex-col md:flex-row bg-[#2A7CC7] text-white">
-        {/* Sol Mavi Alan */}
         <div className="w-full md:w-[60%] p-12 md:p-24 flex flex-col justify-center items-start gap-6">
           <span className="text-sm font-bold tracking-wider uppercase">Work With Us</span>
           <h2 className="text-4xl font-bold leading-tight">Now Let's grow Yours</h2>
@@ -149,7 +139,6 @@ export default function AboutPage() {
           </button>
         </div>
         
-        {/* Sağ Pembe Elbiseli Manken Alanı */}
         <div className="w-full md:w-[40%] min-h-[350px] md:min-h-0 relative">
           <img 
             src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=600" 

@@ -7,11 +7,9 @@ export default function PreviousOrdersPage() {
   const user = useSelector((state) => state.client.user);
   const previousOrders = useSelector((state) => state.shoppingCart?.previousOrders) || [];
   
-  // Hangi sipariş satırının açık olduğunu tutan state (Akordiyon mantığı)
   const [openOrderId, setOpenOrderId] = useState(null);
 
   useEffect(() => {
-    // T23: Protected routing mantığı - Giriş yapılmadıysa login'e fırlat
     if (!user || !user.token) {
       window.history.pushState({}, '', '/login');
       window.dispatchEvent(new Event('navigationChange'));
@@ -28,7 +26,6 @@ export default function PreviousOrdersPage() {
     <div className="w-full min-h-screen bg-[#F9F9F9] py-10 px-4 md:px-8 text-[#252B42] text-left">
       <div className="max-w-5xl mx-auto flex flex-col gap-6">
         
-        {/* Başlık */}
         <div className="border-b border-gray-200 pb-4">
           <h1 className="text-2xl font-black">Geçmiş Siparişlerim</h1>
           <p className="text-xs text-gray-500 font-semibold mt-1">Daha önce vermiş olduğunuz siparişlerin detaylarını buradan inceleyebilirsiniz.</p>
@@ -40,7 +37,6 @@ export default function PreviousOrdersPage() {
             <p className="font-bold text-gray-500 text-sm">Henüz kayıtlı bir siparişiniz bulunmuyor.</p>
           </div>
         ) : (
-          /* Sipariş Listesi / Tablo Görünümü */
           <div className="flex flex-col gap-4">
             {previousOrders.map((order) => {
               const isOpen = openOrderId === order.id;
@@ -51,7 +47,6 @@ export default function PreviousOrdersPage() {
               return (
                 <div key={order.id} className="bg-white rounded-md border border-gray-200 shadow-xs overflow-hidden transition-all">
                   
-                  {/* Sipariş Satırı Ana Başlık Alanı */}
                   <div 
                     onClick={() => toggleOrder(order.id)} 
                     className="p-4 md:p-5 flex flex-wrap items-center justify-between gap-4 cursor-pointer hover:bg-gray-50/50 select-none"
@@ -81,18 +76,15 @@ export default function PreviousOrdersPage() {
                     </div>
                   </div>
 
-                  {/* COLLAPSIBLE PANEL: DETAY ALANI (Açılıp Kapanan Kısım) */}
                   {isOpen && (
                     <div className="border-t border-gray-100 bg-gray-50/30 p-4 md:p-6 animate-fade-in flex flex-col gap-4 text-xs font-bold">
                       
                       <h4 className="font-black text-sm text-gray-700 border-b border-gray-100 pb-2">Sipariş İçeriği</h4>
                       
-                      {/* Ürün Listesi */}
                       <div className="flex flex-col gap-3">
                         {order.products?.map((prod, idx) => (
                           <div key={idx} className="bg-white border border-gray-200 rounded p-3 flex items-center justify-between gap-4">
                             <div className="flex items-center gap-3">
-                              {/* Eğer API'den görsel linki gelmiyorsa varsayılan sepet ikonu veya boş kutu */}
                               <div className="w-12 h-12 bg-gray-100 rounded flex items-center justify-center text-gray-400 font-normal">
                                 📦
                               </div>
@@ -108,7 +100,6 @@ export default function PreviousOrdersPage() {
                         ))}
                       </div>
 
-                      {/* Kart / Teslimat Özeti */}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2 border-t border-gray-100 pt-4 text-gray-600">
                         <div>
                           <p className="text-gray-400 font-medium">Ödeme Yapılan Kart</p>

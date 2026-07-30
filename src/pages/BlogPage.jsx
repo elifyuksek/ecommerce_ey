@@ -1,6 +1,5 @@
 import React from 'react';
 
-// Örnek Blog İçerikleri
 const blogPosts = [
   {
     id: 1,
@@ -39,7 +38,6 @@ export default function BlogPage() {
     <div className="w-full bg-[#FAFAFA] min-h-screen py-12 px-6 md:px-12">
       <div className="max-w-7xl mx-auto flex flex-col gap-12">
         
-        {/* BÖLÜM BAŞLIĞI */}
         <div className="text-center flex flex-col gap-3 max-w-2xl mx-auto">
           <span className="text-sm font-bold text-[#23A6F0] uppercase tracking-wider">
             ElifShop Blog
@@ -52,14 +50,12 @@ export default function BlogPage() {
           </p>
         </div>
 
-        {/* BLOG KARTLARI GRİD YAPISI */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {blogPosts.map((post) => (
             <article 
               key={post.id} 
               className="bg-white rounded-lg border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow flex flex-col"
             >
-              {/* Görsel */}
               <div className="relative h-52 w-full overflow-hidden">
                 <img 
                   src={post.image} 
@@ -71,7 +67,6 @@ export default function BlogPage() {
                 </span>
               </div>
 
-              {/* İçerik */}
               <div className="p-6 flex flex-col justify-between flex-grow gap-4">
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center gap-3 text-xs text-[#737373] font-semibold">
@@ -87,7 +82,6 @@ export default function BlogPage() {
                   </p>
                 </div>
 
-                {/* Alt Detay / Yazar */}
                 <div className="pt-4 border-t border-gray-100 flex items-center justify-between">
                   <span className="text-xs font-bold text-[#252B42]">
                     Yazar: {post.author}

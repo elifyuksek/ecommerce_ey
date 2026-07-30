@@ -7,7 +7,6 @@ export default function Header() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
 
-  // Redux store'dan verileri çekiyoruz
   const user = useSelector((state) => state.client.user);
   const isLoggedIn = user && user.token;
   const categories = useSelector((state) => state.product.categories) || [];
@@ -15,13 +14,10 @@ export default function Header() {
 
   const totalCartCount = cart.reduce((total, item) => total + item.count, 0);
 
-  // KATEGORİ FİLTRELEME
-  // Kadın: Tişört, Elbise, Gömlek kaldı (Ayakkabı, Ceket, Etek, Kazak, Pantolon temizlendi)
   const womenCategories = categories.filter(
     (c) => c.gender === 'k' && !['ayakkabi', 'ceket', 'etek', 'kazak', 'pantalon'].includes(c.code?.split(':')[1]?.toLowerCase())
   );
 
-  // Erkek: Sadece Tişört ve Kazak kaldı
   const menCategories = categories.filter(
     (c) => c.gender === 'e' && ['tisort', 'kazak'].includes(c.code?.split(':')[1]?.toLowerCase())
   );
@@ -54,7 +50,6 @@ export default function Header() {
   return (
     <header className="w-full flex flex-col bg-white border-b border-gray-100 sticky top-0 z-50">
       
-      {/* 1. ÜST ŞERİT */}
       <div className="hidden md:flex w-full bg-[#252B42] text-white text-xs font-bold py-3 px-6 justify-between items-center border-b border-gray-100/10">
         <div className="flex items-center gap-5">
           <a href="tel:+905550000118" className="flex items-center gap-1.5 hover:text-gray-300 transition-colors">
@@ -83,7 +78,6 @@ export default function Header() {
         </div>
       </div>
 
-      {/* 2. ANA NAVİGASYON */}
       <div className="w-full max-w-7xl mx-auto flex items-center justify-between py-5 px-6 md:px-8">
         <div className="flex items-center gap-20">
           <button onClick={() => navigateTo('/')} className="text-2xl font-bold text-[#252B42] tracking-wide focus:outline-none cursor-pointer">
@@ -93,7 +87,6 @@ export default function Header() {
           <nav className="hidden md:flex items-center gap-6 text-sm font-bold text-[#737373]">
             <button onClick={() => navigateTo('/')} className="hover:text-[#23A6F0] transition-colors focus:outline-none cursor-pointer">Home</button>
             
-            {/* SHOP DROPDOWN */}
             <div 
               className="relative py-2"
               onMouseEnter={() => setIsDropdownOpen(true)}
@@ -109,7 +102,6 @@ export default function Header() {
 
               {isDropdownOpen && categories.length > 0 && (
                 <div className="absolute left-0 top-full bg-white border border-gray-100 shadow-lg rounded-md p-6 flex gap-12 z-50 min-w-[320px] text-[#737373]">
-                  {/* Kadın */}
                   <div className="flex flex-col gap-3">
                     <h3 className="font-bold text-[#23A6F0] border-b border-gray-100 pb-1 text-sm tracking-wide">Kadın</h3>
                     <div className="flex flex-col gap-2">
@@ -125,7 +117,6 @@ export default function Header() {
                     </div>
                   </div>
 
-                  {/* Erkek */}
                   <div className="flex flex-col gap-3">
                     <h3 className="font-bold text-[#23A6F0] border-b border-gray-100 pb-1 text-sm tracking-wide">Erkek</h3>
                     <div className="flex flex-col gap-2">
@@ -151,7 +142,6 @@ export default function Header() {
           </nav>
         </div>
 
-        {/* SAĞ Taraf */}
         <div className="flex items-center gap-6 text-[#23A6F0] text-sm font-bold">
           {isLoggedIn ? (
             <div 
@@ -192,7 +182,6 @@ export default function Header() {
               )}
             </div>
           ) : (
-            /* DÜZELTİLEN LOGIN / REGISTER AYRI AYRI LINK YAPISI */
             <div className="hidden md:flex items-center gap-2 text-[#23A6F0]">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
               <button 
@@ -216,7 +205,6 @@ export default function Header() {
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
             </button>
 
-            {/* SEPET */}
             <div 
               className="relative py-2"
               onMouseEnter={() => setIsCartOpen(true)}
@@ -320,7 +308,6 @@ export default function Header() {
         </div>
       </div>
 
-      {/* 3. MOBİL MENÜ */}
       {isMenuOpen && (
         <div className="w-full flex flex-col items-center bg-white py-8 md:hidden border-t border-gray-100">
           <nav className="flex flex-col items-center gap-6 text-xl font-medium text-gray-500">

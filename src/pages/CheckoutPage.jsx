@@ -75,11 +75,9 @@ export default function CheckoutPage() {
     }));
   };
 
-  // T22: SİPARİŞİ TAMAMLA VE POST ET
   const handleCompleteOrder = () => {
     if (!selectedShipping) return alert("Lütfen bir teslimat adresi seçin.");
     
-    // Form açıksa veya kart seçilmemişse uyarı ver
     const activeCardNo = showCardForm ? cardFormData.card_no : selectedCard?.card_no;
     const activeCardName = showCardForm ? cardFormData.name_on_card : selectedCard?.name_on_card;
     const activeMonth = showCardForm ? cardFormData.expire_month : selectedCard?.expire_month;
@@ -89,7 +87,6 @@ export default function CheckoutPage() {
       return alert("Lütfen geçerli bir kart bilgisi seçin veya doldurun.");
     }
 
-    // İstenen tam payload veri yapısını oluşturuyoruz
     const orderPayload = {
       address_id: selectedShipping.id,
       order_date: new Date().toISOString(),
@@ -109,7 +106,6 @@ export default function CheckoutPage() {
     dispatch(createOrderAction(
       orderPayload,
       (successData) => {
-        // Sipariş Başarılı
         setOrderSuccessData(successData);
       },
       (error) => {
@@ -123,7 +119,6 @@ export default function CheckoutPage() {
     window.dispatchEvent(new Event('navigationChange'));
   };
 
-  // T22: TEBRİKLER EKRANI (Mavi Konseptli)
   if (orderSuccessData) {
     return (
       <div className="w-full min-h-screen bg-[#F9F9F9] py-16 px-4 flex items-center justify-center text-[#252B42]">
@@ -155,9 +150,7 @@ export default function CheckoutPage() {
     <div className="w-full min-h-screen bg-[#F9F9F9] py-8 px-4 md:px-8 text-[#252B42]">
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-6 items-start">
         
-        {/* SOL ALAN */}
         <div className="w-full lg:w-[72%] flex flex-col gap-6">
-          {/* ÜST ADIM NAVİGASYON ŞERİDİ */}
           <div className="w-full bg-white rounded-md border border-gray-200 flex shadow-sm overflow-hidden">
             <button onClick={() => setActiveStep(1)} className={`w-1/2 p-4 border-b-4 text-left focus:outline-none transition-all cursor-pointer ${activeStep === 1 ? 'border-[#23A6F0] bg-blue-50/20' : 'border-gray-100 opacity-60'}`}>
               <span className={`text-xl font-extrabold ${activeStep === 1 ? 'text-[#23A6F0]' : 'text-gray-400'}`}>1. Adres Bilgileri</span>
@@ -169,7 +162,6 @@ export default function CheckoutPage() {
             </button>
           </div>
 
-          {/* ADIM 1 İÇERİĞİ */}
           {activeStep === 1 && (
             <div className="flex flex-col gap-6 animate-fade-in">
               <div className="w-full bg-blue-50 border border-blue-100 rounded-md p-4 flex items-center gap-3 text-xs font-bold text-gray-600 text-left">
@@ -199,7 +191,6 @@ export default function CheckoutPage() {
             </div>
           )}
 
-          {/* ADIM 2 İÇERİĞİ */}
           {activeStep === 2 && (
             <div className="bg-white rounded-md border border-gray-200 p-6 shadow-sm flex flex-col gap-6 text-left animate-fade-in">
               <div className="border border-blue-100 bg-blue-50/20 rounded-md p-4 flex items-start gap-3">
@@ -255,7 +246,6 @@ export default function CheckoutPage() {
           )}
         </div>
 
-        {/* SAĞ PANEL */}
         <div className="w-full lg:w-[28%] flex flex-col gap-4">
           {activeStep === 1 ? (
             <button disabled={!selectedShipping} onClick={() => setActiveStep(2)} className={`w-full text-white font-bold text-sm py-4 rounded-md transition-all text-center flex items-center justify-center gap-2 shadow-md ${!selectedShipping ? 'bg-gray-300 cursor-not-allowed shadow-none' : 'bg-[#23A6F0] hover:bg-sky-600 cursor-pointer shadow-sky-100'}`}>
@@ -289,7 +279,6 @@ export default function CheckoutPage() {
 
       </div>
 
-      {/* MODAL: ADRES FORMU */}
       {showAddressForm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-md max-w-lg w-full p-6 shadow-xl flex flex-col gap-5 max-h-[90vh] overflow-y-auto">

@@ -12,7 +12,6 @@ const mockProducts = [
   { id: 8, title: "Graphic Design", department: "English Department", oldPrice: "16.48", newPrice: "6.48", image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=500" },
 ];
 
-// Blog postları için mockup veriler
 const mockPosts = [
   { id: 1, title: "Loudest à la Madison #1 (L'integral)", image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=500" },
   { id: 2, title: "Loudest à la Madison #1 (L'integral)", image: "https://images.unsplash.com/photo-1542224566-6e85f2e6772f?w=500" },
@@ -42,7 +41,6 @@ export default function HomePage({ onProductSelect }) {
   return (
     <div className="w-full flex flex-col gap-20 pb-20">
       
-      {/* 1. ÜST GEÇİŞLİ SLIDER */}
       <section className={`w-full ${topSlides[currentTopSlide].bgClass} transition-colors duration-500 min-h-[500px] md:min-h-[650px] flex items-center relative text-white overflow-hidden`}>
         <button onClick={prevTopSlide} className="absolute left-4 z-10 p-2 text-3xl font-light hover:opacity-70 focus:outline-none select-none">&#10094;</button>
         <button onClick={nextTopSlide} className="absolute right-4 z-10 p-2 text-3xl font-light hover:opacity-70 focus:outline-none select-none">&#10095;</button>
@@ -62,7 +60,6 @@ export default function HomePage({ onProductSelect }) {
         </div>
       </section>
 
-      {/* 2. EDITOR'S PICK ALANI */}
       <section className="w-full bg-[#FAFAFA] py-16 px-6 md:px-8 flex flex-col items-center gap-12">
         <div className="flex flex-col items-center gap-2 text-center">
           <h2 className="text-2xl font-bold text-[#252B42] tracking-wider uppercase">EDITOR'S PICK</h2>
@@ -92,7 +89,6 @@ export default function HomePage({ onProductSelect }) {
         </div>
       </section>
 
-      {/* 3. VITRIN / BESTSELLER PRODUCTS ALANI */}
       <section className="w-full max-w-7xl mx-auto flex flex-col items-center px-6 md:px-8 gap-12">
         <div className="flex flex-col items-center gap-2 text-center">
           <h4 className="text-sm font-bold text-[#737373] tracking-wide uppercase">Featured Products</h4>
@@ -108,7 +104,6 @@ export default function HomePage({ onProductSelect }) {
         </div>
       </section>
 
-          {/* 6. EN ALT GEÇİŞLİ SLIDER (Yeşil ile Başlayan) */}
       <section className={`w-full ${bottomSlides[currentBottomSlide].bgClass} transition-colors duration-500 min-h-[500px] md:min-h-[650px] flex items-center relative text-white overflow-hidden`}>
         <button onClick={prevBottomSlide} className="absolute left-4 z-10 p-2 text-3xl font-light hover:opacity-70 focus:outline-none select-none">&#10094;</button>
         <button onClick={nextBottomSlide} className="absolute right-4 z-10 p-2 text-3xl font-light hover:opacity-70 focus:outline-none select-none">&#10095;</button>
@@ -133,13 +128,10 @@ export default function HomePage({ onProductSelect }) {
         </div>
       </section>
 
-      {/* 4. PART OF THE NEURAL UNIVERSE (Yeni Eklenen Çift Bölmeli Alan) */}
       <section className="w-full max-w-7xl mx-auto flex flex-col md:flex-row items-center px-6 md:px-8 gap-12 py-10">
-        {/* Sol Görsel Kapsayıcı */}
         <div className="w-full md:w-1/2 flex justify-center">
           <img src="https://images.unsplash.com/photo-1463453091185-61582044d556?w=600" alt="Neural Universe Pair" className="w-full max-w-md h-auto object-cover" />
         </div>
-        {/* Sağ İçerik Kapsayıcı */}
         <div className="w-full md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left gap-4 md:gap-6">
           <h5 className="text-sm font-bold text-[#BDBDBD] tracking-widest uppercase">SUMMER 2020</h5>
           <h2 className="text-3xl md:text-4xl font-extrabold text-[#252B42] tracking-wide leading-tight">Part of the Neural <br /> Universe</h2>
@@ -153,14 +145,12 @@ export default function HomePage({ onProductSelect }) {
         </div>
       </section>
 
-      {/* 5. FEATURED POSTS / BLOG ALANI (Yeni Eklenen 3'lü Kart Alanı) */}
       <section className="w-full max-w-7xl mx-auto flex flex-col items-center px-6 md:px-8 gap-12 py-10">
         <div className="flex flex-col items-center gap-2 text-center">
           <h6 className="text-sm font-bold text-[#23A6F0] tracking-wide">Practice Advice</h6>
           <h2 className="text-2xl font-bold text-[#252B42] tracking-wider uppercase">Featured Posts</h2>
           <p className="text-sm font-medium text-[#737373] max-w-md">Problems trying to resolve the conflict between the two major realms of Classical physics: Newtonian mechanics</p>
         </div>
-        {/* 3'lü Esnek Kart Düzeni */}
         <div className="w-full flex flex-col md:flex-row gap-6">
           {mockPosts.map((post) => (
             <div key={post.id} className="w-full md:w-1/3 flex flex-col bg-white border border-[#E8E8E8] shadow-sm overflow-hidden rounded-sm">

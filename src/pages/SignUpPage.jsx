@@ -16,27 +16,22 @@ export default function SignUpPage() {
     formState: { errors }
   } = useForm({
     defaultValues: {
-      role_id: '3' // Genellikle Customer rolünün ID'si 3 olur, default olarak set ediyoruz
+      role_id: '3' 
     }
   });
 
-  // Seçilen rolü anlık olarak izleyip Store alanlarını açıp kapatmak için kullanacağız
   const selectedRoleId = watch('role_id');
   
-  // Şifre alanını izleyerek şifre tekrarı (confirmPassword) ile uyuşmasını kontrol edeceğiz
   const password = watch('password');
 
-  // 1. Sayfa açıldığında API'den rolleri çekiyoruz
   useEffect(() => {
     API.get('/roles')
       .then((res) => {
         setRoles(res.data);
         setIsLoadingRoles(false);
         
-        // Gelen roller arasından "customer" olanın id'sini bulup default atayalım
         const customerRole = res.data.find(role => role.code.toLowerCase() === 'customer');
         if (customerRole) {
-          // react-hook-form defaultValues veya set edilebilir, ama direkt state'den de beslenebilir
         }
       })
       .catch((err) => {
@@ -45,19 +40,16 @@ export default function SignUpPage() {
       });
   }, []);
 
-  // Seçilen rolün isminin "Store" (Mağaza) olup olmadığını kontrol eden fonksiyon
   const isStoreSelected = () => {
     const activeRole = roles.find(r => String(r.id) === String(selectedRoleId));
     return activeRole && activeRole.code.toLowerCase() === 'store';
   };
 
-  // 2. Form Gönderildiğinde Çalışacak Ana Fonksiyon
   const onSubmit = (data) => {
     setIsSubmitting(true);
     setApiError('');
     setSuccessMessage('');
 
-    // Backend'in istediği formata göre veriyi hazırlıyoruz
     let payload = {
       name: data.name,
       email: data.email,
@@ -65,7 +57,6 @@ export default function SignUpPage() {
       role_id: Number(data.role_id)
     };
 
-    // Eğer Store seçildiyse, store objesini ekliyoruz
     if (isStoreSelected()) {
       payload.store = {
         name: data.storeName,
@@ -75,13 +66,11 @@ export default function SignUpPage() {
       };
     }
 
-    // POST isteği ile sunucuya kayıt gönderiyoruz
     API.post('/signup', payload)
       .then((res) => {
         setIsSubmitting(false);
         setSuccessMessage('You need to click link in email to activate your account!');
         
-        // 3 saniye sonra bir önceki sayfaya yönlendirme simülasyonu (veya ana sayfaya)
         setTimeout(() => {
           window.history.back();
           setTimeout(() => {
@@ -91,7 +80,6 @@ export default function SignUpPage() {
       })
       .catch((err) => {
         setIsSubmitting(false);
-        // Backend'den dönen hata mesajını yakalıyoruz
         const msg = err.response?.data?.message || 'Something went wrong during sign up!';
         setApiError(msg);
       });
@@ -106,7 +94,6 @@ export default function SignUpPage() {
           <p className="text-sm text-[#737373]">Sign up to start discovering great deals!</p>
         </div>
 
-        {/* Başarı veya Hata Mesajları */}
         {successMessage && (
           <div className="p-4 bg-green-50 border border-green-200 text-green-700 text-sm font-bold rounded-md">
             {successMessage}
@@ -120,7 +107,6 @@ export default function SignUpPage() {
 
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
           
-          {/* İSİM ALANI */}
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-bold text-[#252B42] uppercase">Name</label>
             <input 
@@ -135,7 +121,6 @@ export default function SignUpPage() {
             {errors.name && <span className="text-xs text-red-500 font-bold">{errors.name.message}</span>}
           </div>
 
-          {/* E-POSTA ALANI */}
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-bold text-[#252B42] uppercase">Email</label>
             <input 
@@ -153,7 +138,6 @@ export default function SignUpPage() {
             {errors.email && <span className="text-xs text-red-500 font-bold">{errors.email.message}</span>}
           </div>
 
-          {/* ŞİFRE ALANI */}
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-bold text-[#252B42] uppercase">Password</label>
             <input 
@@ -172,7 +156,6 @@ export default function SignUpPage() {
             {errors.password && <span className="text-xs text-red-500 font-bold">{errors.password.message}</span>}
           </div>
 
-          {/* ŞİFRE TEKRARI ALANI */}
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-bold text-[#252B42] uppercase">Confirm Password</label>
             <input 
@@ -187,7 +170,6 @@ export default function SignUpPage() {
             {errors.confirmPassword && <span className="text-xs text-red-500 font-bold">{errors.confirmPassword.message}</span>}
           </div>
 
-          {/* ROL SEÇİM ALANI */}
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-bold text-[#252B42] uppercase">Role</label>
             {isLoadingRoles ? (
@@ -207,12 +189,10 @@ export default function SignUpPage() {
             {errors.role_id && <span className="text-xs text-red-500 font-bold">{errors.role_id.message}</span>}
           </div>
 
-          {/* ================= DİNAMİK MAĞAZA (STORE) ALANLARI ================= */}
           {isStoreSelected() && (
             <div className="flex flex-col gap-4 border-l-4 border-[#23A6F0] pl-4 py-2 my-2 bg-sky-50/30 rounded-r-md">
               <h3 className="text-sm font-bold text-[#23A6F0]">Store Information</h3>
 
-              {/* Mağaza Adı */}
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-bold text-[#252B42]">Store Name</label>
                 <input 
@@ -227,7 +207,6 @@ export default function SignUpPage() {
                 {errors.storeName && <span className="text-xs text-red-500 font-bold">{errors.storeName.message}</span>}
               </div>
 
-              {/* Mağaza Telefonu (Türkiye formatı) */}
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-bold text-[#252B42]">Store Phone</label>
                 <input 
@@ -245,7 +224,6 @@ export default function SignUpPage() {
                 {errors.storePhone && <span className="text-xs text-red-500 font-bold">{errors.storePhone.message}</span>}
               </div>
 
-              {/* Mağaza Vergi Kimlik No */}
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-bold text-[#252B42]">Store Tax ID</label>
                 <input 
@@ -263,7 +241,6 @@ export default function SignUpPage() {
                 {errors.storeTaxNo && <span className="text-xs text-red-500 font-bold">{errors.storeTaxNo.message}</span>}
               </div>
 
-              {/* Mağaza Banka Hesabı (IBAN) */}
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-bold text-[#252B42]">Store Bank Account (IBAN)</label>
                 <input 
@@ -283,7 +260,6 @@ export default function SignUpPage() {
             </div>
           )}
 
-          {/* GÖNDERME BUTONU (SPINNER & DISABLED ÖZELLİKLİ) */}
           <button 
             type="submit" 
             disabled={isSubmitting}

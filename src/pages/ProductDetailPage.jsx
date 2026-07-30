@@ -10,7 +10,6 @@ export default function ProductDetailPage() {
   
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
-  // URL'den productId'yi yakalama (Sondaki parametre)
   useEffect(() => {
     const pathSegments = window.location.pathname.split('/');
     const id = parseInt(pathSegments[pathSegments.length - 1], 10);
@@ -24,7 +23,6 @@ export default function ProductDetailPage() {
     window.history.back();
   };
 
-  // Spinner Gösterimi
   if (fetchState === 'FETCHING') {
     return (
       <div className="w-full min-h-[60vh] flex flex-col items-center justify-center gap-4">
@@ -48,7 +46,6 @@ export default function ProductDetailPage() {
     );
   }
 
-  // Görselleri ve ana görseli belirleme
   const images = product.images && product.images.length > 0 ? product.images : [];
   const currentImage = images[activeImageIndex]?.url || 'https://via.placeholder.com/600x800?text=No+Image';
 
@@ -56,7 +53,6 @@ export default function ProductDetailPage() {
     <div className="w-full bg-[#FAFAFA] py-12 px-6 md:px-8">
       <div className="max-w-7xl mx-auto flex flex-col gap-8">
         
-        {/* BACK BUTTON & BREADCRUMB */}
         <div className="flex items-center justify-between">
           <button 
             onClick={handleBack}
@@ -74,10 +70,8 @@ export default function ProductDetailPage() {
           </div>
         </div>
 
-        {/* PRODUCT DETAIL CONTENT */}
         <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-12 bg-white p-6 md:p-10 rounded-md border border-gray-100 shadow-sm">
           
-          {/* LEFT: IMAGE GALLERY */}
           <div className="flex flex-col gap-4">
             <div className="w-full aspect-[3/4] overflow-hidden rounded-md bg-gray-50 border border-gray-100">
               <img 
@@ -86,7 +80,6 @@ export default function ProductDetailPage() {
                 className="w-full h-full object-cover transition-transform duration-300"
               />
             </div>
-            {/* Küçük Görseller */}
             {images.length > 1 && (
               <div className="flex gap-3 overflow-x-auto py-1">
                 {images.map((img, idx) => (
@@ -103,12 +96,10 @@ export default function ProductDetailPage() {
             )}
           </div>
 
-          {/* RIGHT: PRODUCT INFO */}
           <div className="flex flex-col justify-between gap-6 py-2">
             <div className="flex flex-col gap-4">
               <h1 className="text-2xl font-bold text-[#252B42] tracking-wide text-left">{product.name}</h1>
               
-              {/* Rating & Review */}
               <div className="flex items-center gap-2.5">
                 <div className="flex text-yellow-400 text-sm">
                   ★ ★ ★ ★ ☆ <span className="text-[#737373] text-xs font-bold ml-1.5 mt-0.5">({product.rating})</span>
@@ -118,7 +109,6 @@ export default function ProductDetailPage() {
                 </span>
               </div>
 
-              {/* Price & Stock */}
               <div className="flex flex-col gap-1.5 mt-2">
                 <span className="text-3xl font-bold text-[#252B42] text-left">${product.price}</span>
                 <span className="text-xs font-bold flex items-center gap-1.5 mt-1">
@@ -131,15 +121,12 @@ export default function ProductDetailPage() {
                 </span>
               </div>
 
-              {/* Description */}
               <p className="text-sm text-[#858585] leading-relaxed mt-3 border-t border-gray-100 pt-5 text-left">
                 {product.description}
               </p>
             </div>
 
-            {/* Actions (Colors, Size, Add to Cart) */}
             <div className="flex flex-col gap-6 border-t border-gray-100 pt-6 mt-4">
-              {/* Renk Seçimi */}
               <div className="flex items-center gap-2.5">
                 <span className="text-sm font-bold text-[#737373]">Select Color:</span>
                 <div className="flex items-center gap-2">
@@ -150,7 +137,6 @@ export default function ProductDetailPage() {
                 </div>
               </div>
 
-              {/* Butonlar */}
               <div className="flex items-center gap-4 flex-wrap mt-2">
                 <button 
                   onClick={() => dispatch(addToCart(product))}

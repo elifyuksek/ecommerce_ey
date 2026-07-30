@@ -15,7 +15,7 @@ export const productReducer = (state = initialState, action) => {
       return { ...state, categories: action.payload };
     case 'SET_PRODUCT_LIST':
       return { ...state, productList: action.payload };
-    case 'SET_PRODUCT': // T16 için eklendi
+    case 'SET_PRODUCT': 
       return { ...state, product: action.payload };
     case 'SET_TOTAL':
       return { ...state, total: action.payload };
