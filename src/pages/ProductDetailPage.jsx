@@ -3,27 +3,44 @@ import { useSelector, useDispatch } from 'react-redux';
 import { fetchProductByIdAction } from '../store/actions/productActions';
 import { addToCart } from '../store/actions/shoppingCartActions';
 
-export default function ProductDetailPage() {
+export default function ProductDetailPage({ selectedProduct, onProductSelect }) {
   const dispatch = useDispatch();
-  const product = useSelector((state) => state.product.product) || {};
-  const fetchState = useSelector((state) => state.product.fetchState);
+  const productFromRedux = useSelector((state) => state.product?.product);
+  const fetchState = useSelector((state) => state.product?.fetchState);
+  const favorites = useSelector((state) => state.shoppingCart?.favorites) || [];
   
+  const product = productFromRedux?.id ? productFromRedux : (selectedProduct || {});
+  const isFavorite = favorites.some((item) => item.id === product?.id);
+
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   useEffect(() => {
-    const pathSegments = window.location.pathname.split('/');
-    const id = parseInt(pathSegments[pathSegments.length - 1], 10);
+    const pathSegments = window.location.pathname.split('/').filter(Boolean);
+    const rawId = pathSegments[pathSegments.length - 1];
+    const cleanId = rawId ? rawId.split(':')[0].replace(/\D/g, '') : null;
+    const parsedId = parseInt(cleanId, 10);
     
-    if (!isNaN(id)) {
-      dispatch(fetchProductByIdAction(id));
+    if (!isNaN(parsedId) && parsedId > 0) {
+      dispatch(fetchProductByIdAction(parsedId));
     }
-  }, [dispatch, window.location.pathname]);
+  }, [dispatch]);
 
   const handleBack = () => {
     window.history.back();
   };
 
-  if (fetchState === 'FETCHING') {
+  const handleToggleFavorite = () => {
+    if (!product || !product.id) return;
+    dispatch({ type: 'TOGGLE_FAVORITE', payload: product });
+  };
+
+  const getImageUrl = (img) => {
+    if (!img) return 'https://via.placeholder.com/600x800?text=No+Image';
+    if (typeof img === 'string') return img;
+    return img.url || img.imageUrl || img.image_url || 'https://via.placeholder.com/600x800?text=No+Image';
+  };
+
+  if (fetchState === 'FETCHING' && !product.id) {
     return (
       <div className="w-full min-h-[60vh] flex flex-col items-center justify-center gap-4">
         <svg className="animate-spin h-12 w-12 text-[#23A6F0]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -35,7 +52,7 @@ export default function ProductDetailPage() {
     );
   }
 
-  if (fetchState === 'FAILED' || !product.id) {
+  if (fetchState === 'FAILED' && !product.id) {
     return (
       <div className="w-full min-h-[60vh] flex flex-col items-center justify-center gap-4 text-center">
         <p className="text-red-500 font-bold text-lg">Failed to load product details.</p>
@@ -46,8 +63,11 @@ export default function ProductDetailPage() {
     );
   }
 
-  const images = product.images && product.images.length > 0 ? product.images : [];
-  const currentImage = images[activeImageIndex]?.url || 'https://via.placeholder.com/600x800?text=No+Image';
+  const rawImages = product.images && product.images.length > 0 
+    ? product.images 
+    : (product.image || product.imageUrl || product.image_url ? [product.image || product.imageUrl || product.image_url] : []);
+    
+  const currentImage = getImageUrl(rawImages[activeImageIndex]);
 
   return (
     <div className="w-full bg-[#FAFAFA] py-12 px-6 md:px-8">
@@ -66,7 +86,7 @@ export default function ProductDetailPage() {
             <span>&gt;</span>
             <span className="text-[#252B42]">Shop</span>
             <span>&gt;</span>
-            <span className="truncate max-w-[150px]">{product.name}</span>
+            <span className="truncate max-w-[150px]">{product.name || 'Product'}</span>
           </div>
         </div>
 
@@ -76,20 +96,32 @@ export default function ProductDetailPage() {
             <div className="w-full aspect-[3/4] overflow-hidden rounded-md bg-gray-50 border border-gray-100">
               <img 
                 src={currentImage} 
-                alt={product.name} 
+                alt={product.name || 'Product'} 
                 className="w-full h-full object-cover transition-transform duration-300"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = 'https://via.placeholder.com/600x800?text=No+Image';
+                }}
               />
             </div>
-            {images.length > 1 && (
+            {rawImages.length > 1 && (
               <div className="flex gap-3 overflow-x-auto py-1">
-                {images.map((img, idx) => (
+                {rawImages.map((img, idx) => (
                   <button
                     key={idx}
                     onClick={() => setActiveImageIndex(idx)}
                     className={`w-20 h-24 rounded overflow-hidden border-2 transition-all focus:outline-none cursor-pointer flex-shrink-0
                       ${activeImageIndex === idx ? 'border-[#23A6F0]' : 'border-transparent opacity-75 hover:opacity-100'}`}
                   >
-                    <img src={img.url} alt={`Preview ${idx}`} className="w-full h-full object-cover" />
+                    <img 
+                      src={getImageUrl(img)} 
+                      alt={`Preview ${idx}`} 
+                      className="w-full h-full object-cover" 
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = 'https://via.placeholder.com/150x200?text=No+Image';
+                      }}
+                    />
                   </button>
                 ))}
               </div>
@@ -102,10 +134,10 @@ export default function ProductDetailPage() {
               
               <div className="flex items-center gap-2.5">
                 <div className="flex text-yellow-400 text-sm">
-                  ★ ★ ★ ★ ☆ <span className="text-[#737373] text-xs font-bold ml-1.5 mt-0.5">({product.rating})</span>
+                  ★ ★ ★ ★ ☆ <span className="text-[#737373] text-xs font-bold ml-1.5 mt-0.5">({product.rating ?? '0.0'})</span>
                 </div>
                 <span className="text-[#737373] font-bold text-xs border-l border-gray-200 pl-2.5">
-                  {product.sell_count} Reviews
+                  {product.sell_count ?? 0} Reviews
                 </span>
               </div>
 
@@ -145,8 +177,18 @@ export default function ProductDetailPage() {
                   Add to Cart
                 </button>
                 <div className="flex items-center gap-2">
-                  <button className="border border-[#E8E8E8] hover:bg-gray-50 p-3.5 rounded-full text-[#252B42] transition-colors cursor-pointer" aria-label="Add to Favorites">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+                  <button 
+                    onClick={handleToggleFavorite}
+                    className={`border p-3.5 rounded-full transition-all cursor-pointer ${
+                      isFavorite 
+                        ? 'border-red-500 bg-red-50 text-red-500 fill-current' 
+                        : 'border-[#E8E8E8] hover:bg-gray-50 text-[#252B42]'
+                    }`}
+                    aria-label="Add to Favorites"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill={isFavorite ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2.5">
+                      <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                    </svg>
                   </button>
                   <button 
                     onClick={() => dispatch(addToCart(product))}

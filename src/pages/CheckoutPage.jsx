@@ -18,7 +18,7 @@ const TURKEY_CITIES = ["Adana", "Adıyaman", "Afyonkarahisar", "Ağrı", "Aksara
 
 export default function CheckoutPage() {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.client.user);
+  const user = useSelector((state) => state.client?.user);
   const cart = useSelector((state) => state.shoppingCart?.cart) || [];
   
   const addressList = useSelector((state) => state.shoppingCart?.addressList) || [];
@@ -34,12 +34,13 @@ export default function CheckoutPage() {
   const [isEditingAddress, setIsEditingAddress] = useState(false);
   const [secure3D, setSecure3D] = useState(false);
   
-  // T22: Sipariş Başarı State'i
+  // T22: Sipariş Başarı State'i ve Ödenen Tutar Hafızası
   const [orderSuccessData, setOrderSuccessData] = useState(null);
+  const [paidTotalAmount, setPaidTotalAmount] = useState(0);
 
   const [addressFormData, setAddressFormData] = useState({ title: '', name: '', surname: '', phone: '', city: 'istanbul', district: '', neighborhood: '' });
   const [cardFormData, setCardFormData] = useState({ card_no: '', expire_month: 1, expire_year: 2026, name_on_card: '' });
-  const [cardCcv, setCardCcv] = useState('321'); // Varsayılan örnek CCV
+  const [cardCcv, setCardCcv] = useState('321');
 
   useEffect(() => {
     if (user?.token) {
@@ -48,7 +49,7 @@ export default function CheckoutPage() {
     }
   }, [user, dispatch]);
 
-  const productsTotal = cart.filter(i => i.checked).reduce((acc, i) => acc + i.product.price * i.count, 0);
+  const productsTotal = cart.filter(i => i.checked).reduce((acc, i) => acc + (i.product?.price || 0) * i.count, 0);
   const shippingPrice = productsTotal > 0 ? 29.99 : 0;
   const shippingDiscount = productsTotal >= 150 ? -29.99 : 0;
   const grandTotal = productsTotal + shippingPrice + shippingDiscount;
@@ -66,8 +67,8 @@ export default function CheckoutPage() {
     e.preventDefault();
     const formattedData = {
       ...cardFormData,
-      expire_month: parseInt(cardFormData.expire_month),
-      expire_year: parseInt(cardFormData.expire_year)
+      expire_month: parseInt(cardFormData.expire_month, 10),
+      expire_year: parseInt(cardFormData.expire_year, 10)
     };
     dispatch(addCardAction(formattedData, () => {
       setShowCardForm(false);
@@ -87,26 +88,29 @@ export default function CheckoutPage() {
       return alert("Lütfen geçerli bir kart bilgisi seçin veya doldurun.");
     }
 
+    const currentTotal = parseFloat(grandTotal.toFixed(2));
+    setPaidTotalAmount(currentTotal);
+
     const orderPayload = {
       address_id: selectedShipping.id,
       order_date: new Date().toISOString(),
-      card_no: parseInt(activeCardNo.replace(/\s/g, '')) || 1234123412341234,
+      card_no: String(activeCardNo).replace(/\s/g, ''),
       card_name: activeCardName,
-      card_expire_month: parseInt(activeMonth),
-      card_expire_year: parseInt(activeYear),
-      card_ccv: parseInt(cardCcv) || 321,
-      price: parseFloat(grandTotal.toFixed(2)),
+      card_expire_month: parseInt(activeMonth, 10),
+      card_expire_year: parseInt(activeYear, 10),
+      card_ccv: parseInt(cardCcv, 10) || 321,
+      price: currentTotal,
       products: cart.filter(item => item.checked).map(item => ({
         product_id: item.product.id,
         count: item.count,
-        detail: `Renk: Standart - Beden: Standart` // Varsa dinamik varyasyon detayı
+        detail: `Renk: Standart - Beden: Standart`
       }))
     };
 
     dispatch(createOrderAction(
       orderPayload,
       (successData) => {
-        setOrderSuccessData(successData);
+        setOrderSuccessData(successData || { id: Math.floor(1000 + Math.random() * 9000), price: currentTotal });
       },
       (error) => {
         alert("Sipariş verilirken bir hata oluştu, lütfen bilgileri kontrol edin.");
@@ -120,6 +124,10 @@ export default function CheckoutPage() {
   };
 
   if (orderSuccessData) {
+    const displayPrice = (orderSuccessData.price !== undefined && orderSuccessData.price !== null && orderSuccessData.price > 0)
+      ? Number(orderSuccessData.price).toFixed(2)
+      : paidTotalAmount.toFixed(2);
+
     return (
       <div className="w-full min-h-screen bg-[#F9F9F9] py-16 px-4 flex items-center justify-center text-[#252B42]">
         <div className="bg-white rounded-md max-w-xl w-full p-8 shadow-md border border-gray-100 flex flex-col items-center text-center gap-6">
@@ -132,7 +140,7 @@ export default function CheckoutPage() {
           </p>
           <div className="bg-gray-50 rounded p-4 w-full text-xs font-bold text-gray-600 flex flex-col gap-2 text-left">
             <p><span className="text-gray-400">Sipariş ID:</span> #{orderSuccessData.id || '28471'}</p>
-            <p><span className="text-gray-400">Ödenen Tutar:</span> ${grandTotal.toFixed(2)}</p>
+            <p><span className="text-gray-400">Ödenen Tutar:</span> ${displayPrice}</p>
             <p><span className="text-gray-400">Teslimat Adresi:</span> {selectedShipping?.title} ({selectedShipping?.city})</p>
           </div>
           <button 
@@ -163,7 +171,7 @@ export default function CheckoutPage() {
           </div>
 
           {activeStep === 1 && (
-            <div className="flex flex-col gap-6 animate-fade-in">
+            <div className="flex flex-col gap-6">
               <div className="w-full bg-blue-50 border border-blue-100 rounded-md p-4 flex items-center gap-3 text-xs font-bold text-gray-600 text-left">
                 <span className="text-blue-500 text-sm">ℹ</span>
                 <p>Kurumsal faturalı alışveriş için "Faturamı Aynı Adrese Gönder" tikini kaldırıp kurumsal faturanızı seçebilirsiniz.</p>
@@ -192,7 +200,7 @@ export default function CheckoutPage() {
           )}
 
           {activeStep === 2 && (
-            <div className="bg-white rounded-md border border-gray-200 p-6 shadow-sm flex flex-col gap-6 text-left animate-fade-in">
+            <div className="bg-white rounded-md border border-gray-200 p-6 shadow-sm flex flex-col gap-6 text-left">
               <div className="border border-blue-100 bg-blue-50/20 rounded-md p-4 flex items-start gap-3">
                 <input type="radio" defaultChecked className="w-5 h-5 accent-[#23A6F0] mt-0.5 cursor-pointer" />
                 <div className="flex flex-col gap-0.5"><h3 className="font-bold text-sm">Kart ile Öde</h3><p className="text-xs text-gray-500 font-semibold">Banka veya Kredi Kartı kullanarak ödemenizi güvenle yapabilirsiniz.</p></div>

@@ -1,20 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { 
   removeFromCart, 
   updateCartItemCount, 
-  toggleCartItemCheck 
+  toggleCartItemCheck,
+  addToCart
 } from '../store/actions/shoppingCartActions';
+import ProductCard from '../components/ProductCard';
 
 export default function CartPage() {
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.shoppingCart?.cart) || [];
+  const favorites = useSelector((state) => state.shoppingCart?.favorites) || [];
+  const productList = useSelector((state) => state.product?.productList) || [];
+
+  const [activeTab, setActiveTab] = useState('favorites'); 
 
   const totalItemsCount = cart.reduce((acc, item) => acc + item.count, 0);
   
   const productsTotal = cart
     .filter((item) => item.checked)
-    .reduce((acc, item) => acc + item.product.price * item.count, 0);
+    .reduce((acc, item) => acc + (item.product?.price || 0) * item.count, 0);
 
   const shippingPrice = productsTotal > 0 ? 29.99 : 0; 
   const shippingDiscount = productsTotal >= 150 ? -29.99 : 0; 
@@ -38,12 +44,22 @@ export default function CartPage() {
   };
 
   const handleCheckboxChange = (productId) => {
-    dispatch({ type: 'TOGGLE_CART_ITEM_CHECK', payload: productId });
+    dispatch(toggleCartItemCheck(productId));
   };
 
   const navigateTo = (path) => {
     window.history.pushState({}, '', path);
     window.dispatchEvent(new Event('navigationChange'));
+  };
+
+  const getProductImage = (product) => {
+    if (!product) return 'https://via.placeholder.com/150x200?text=No+Image';
+    if (product.images && product.images.length > 0) {
+      const first = product.images[0];
+      if (typeof first === 'string') return first;
+      return first.url || first.imageUrl || first.image_url || 'https://via.placeholder.com/150x200?text=No+Image';
+    }
+    return product.image || product.imageUrl || product.image_url || 'https://via.placeholder.com/150x200?text=No+Image';
   };
 
   return (
@@ -76,19 +92,17 @@ export default function CartPage() {
             
             <div className="w-full lg:w-[70%] flex flex-col gap-4">
               {cart.map((item) => {
-                const imgUrl = item.product.images && item.product.images.length > 0 
-                  ? item.product.images[0].url 
-                  : (item.product.image || 'https://via.placeholder.com/100');
+                const imgUrl = getProductImage(item.product);
 
                 return (
-                  <div key={item.product.id} className="bg-white rounded-md border border-gray-200 overflow-hidden shadow-sm flex flex-col">
+                  <div key={item.product?.id || Math.random()} className="bg-white rounded-md border border-gray-200 overflow-hidden shadow-sm flex flex-col">
                     
                     <div className="px-4 py-3 bg-gray-50 border-b border-gray-100 flex items-center justify-between flex-wrap gap-2 text-xs font-bold text-gray-600">
                       <div className="flex items-center gap-3">
                         <input 
                           type="checkbox"
                           checked={item.checked}
-                          onChange={() => handleCheckboxChange(item.product.id)}
+                          onChange={() => handleCheckboxChange(item.product?.id)}
                           className="w-4 h-4 rounded text-[#23A6F0] focus:ring-[#23A6F0] border-gray-300 cursor-pointer accent-[#23A6F0]"
                         />
                         <span>Satıcı: <span className="text-[#252B42] hover:underline cursor-pointer">Elif Shop</span></span>
@@ -113,17 +127,21 @@ export default function CartPage() {
                         <input 
                           type="checkbox"
                           checked={item.checked}
-                          onChange={() => handleCheckboxChange(item.product.id)}
+                          onChange={() => handleCheckboxChange(item.product?.id)}
                           className="w-5 h-5 rounded text-[#23A6F0] focus:ring-[#23A6F0] border-gray-300 cursor-pointer accent-[#23A6F0]"
                         />
                         <img 
                           src={imgUrl} 
-                          alt={item.product.name} 
+                          alt={item.product?.name || 'Ürün'} 
                           className="w-20 h-28 object-cover rounded border border-gray-200 flex-shrink-0"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = 'https://via.placeholder.com/150x200?text=No+Image';
+                          }}
                         />
                         <div className="flex flex-col gap-1 text-left">
                           <h3 className="font-bold text-sm text-[#252B42] hover:text-[#23A6F0] cursor-pointer transition-colors line-clamp-2">
-                            {item.product.name}
+                            {item.product?.name}
                           </h3>
                           <span className="text-xs text-gray-500 font-medium">Beden: Standart</span>
                           <span className="text-xs text-emerald-600 font-bold flex items-center gap-1.5 mt-1">
@@ -135,7 +153,7 @@ export default function CartPage() {
                       <div className="flex items-center justify-between sm:justify-end gap-8 w-full sm:w-auto border-t sm:border-t-0 pt-4 sm:pt-0">
                         <div className="flex items-center border border-gray-300 rounded overflow-hidden h-9">
                           <button 
-                            onClick={() => handleDecrement(item.product.id, item.count)}
+                            onClick={() => handleDecrement(item.product?.id, item.count)}
                             className="px-3 bg-gray-50 hover:bg-gray-100 font-bold text-gray-600 transition-colors cursor-pointer h-full text-lg"
                           >
                             -
@@ -144,7 +162,7 @@ export default function CartPage() {
                             {item.count}
                           </span>
                           <button 
-                            onClick={() => handleIncrement(item.product.id, item.count)}
+                            onClick={() => handleIncrement(item.product?.id, item.count)}
                             className="px-3 bg-gray-50 hover:bg-gray-100 font-bold text-gray-600 transition-colors cursor-pointer h-full text-lg"
                           >
                             +
@@ -152,11 +170,11 @@ export default function CartPage() {
                         </div>
 
                         <span className="text-lg font-extrabold text-[#23A6F0] min-w-[100px] text-right">
-                          ${(item.product.price * item.count).toFixed(2)}
+                          ${((item.product?.price || 0) * item.count).toFixed(2)}
                         </span>
 
                         <button 
-                          onClick={() => handleRemove(item.product.id)}
+                          onClick={() => handleRemove(item.product?.id)}
                           className="text-gray-400 hover:text-red-500 transition-colors p-1 cursor-pointer"
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
@@ -170,7 +188,6 @@ export default function CartPage() {
             </div>
 
             <div className="w-full lg:w-[30%] flex flex-col gap-4">
-              
               <button 
                 disabled={productsTotal === 0}
                 onClick={() => navigateTo('/checkout')}
@@ -231,23 +248,66 @@ export default function CartPage() {
                 <span>Sepeti Onayla</span>
                 <span className="text-xs">&gt;</span>
               </button>
-
             </div>
 
           </div>
         )}
 
+        
         <div className="w-full border-b border-gray-200 flex gap-8 text-sm font-bold text-gray-500 mt-12 overflow-x-auto select-none">
-          <button className="pb-3 border-b-2 border-[#23A6F0] text-[#23A6F0] whitespace-nowrap cursor-pointer focus:outline-none">
+          <button 
+            onClick={() => setActiveTab('previous')}
+            className={`pb-3 whitespace-nowrap cursor-pointer focus:outline-none transition-colors ${
+              activeTab === 'previous' ? 'border-b-2 border-[#23A6F0] text-[#23A6F0]' : 'hover:text-gray-800'
+            }`}
+          >
             Önceden Eklediklerim
           </button>
-          <button className="pb-3 hover:text-gray-800 whitespace-nowrap cursor-pointer focus:outline-none">
+          
+          <button 
+            onClick={() => setActiveTab('recommended')}
+            className={`pb-3 whitespace-nowrap cursor-pointer focus:outline-none transition-colors ${
+              activeTab === 'recommended' ? 'border-b-2 border-[#23A6F0] text-[#23A6F0]' : 'hover:text-gray-800'
+            }`}
+          >
             Önerilen Ürünler
           </button>
-          <button className="pb-3 hover:text-gray-800 whitespace-nowrap cursor-pointer focus:outline-none flex items-center gap-1.5">
-            Favorilerim 
-            <span className="bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-extrabold animate-pulse">Yeni</span>
+          
+          <button 
+            onClick={() => setActiveTab('favorites')}
+            className={`pb-3 whitespace-nowrap cursor-pointer focus:outline-none transition-colors flex items-center gap-1.5 ${
+              activeTab === 'favorites' ? 'border-b-2 border-[#23A6F0] text-[#23A6F0]' : 'hover:text-gray-800'
+            }`}
+          >
+            Favorilerim ({favorites.length})
           </button>
+        </div>
+
+        {/* SEKME İÇERİKLERİ */}
+        <div className="w-full mt-4">
+          {activeTab === 'favorites' && (
+            favorites.length === 0 ? (
+              <p className="text-sm font-semibold text-gray-400 py-8 text-center">Henüz favorilere eklenmiş bir ürününüz bulunmuyor.</p>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+                {favorites.map(prod => (
+                  <ProductCard key={prod.id} product={prod} onSelect={() => navigateTo(`/shop/erkek/product/1/${prod.name}/${prod.id}`)} />
+                ))}
+              </div>
+            )
+          )}
+
+          {activeTab === 'recommended' && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+              {productList.slice(0, 4).map(prod => (
+                <ProductCard key={prod.id} product={prod} onSelect={() => navigateTo(`/shop/erkek/product/1/${prod.name}/${prod.id}`)} />
+              ))}
+            </div>
+          )}
+
+          {activeTab === 'previous' && (
+            <p className="text-sm font-semibold text-gray-400 py-8 text-center">Daha önce eklediğiniz ürün bulunmuyor.</p>
+          )}
         </div>
 
       </div>

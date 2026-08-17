@@ -7,20 +7,21 @@ export const setFetchState = (state) => ({ type: 'SET_FETCH_STATE', payload: sta
 export const setLimit = (limit) => ({ type: 'SET_LIMIT', payload: limit });
 export const setOffset = (offset) => ({ type: 'SET_OFFSET', payload: offset });
 export const setFilter = (filter) => ({ type: 'SET_FILTER', payload: filter });
+export const setProduct = (product) => ({ type: 'SET_PRODUCT', payload: product });
 
-// ================= T12: FETCH CATEGORIES THUNK ACTION =================
 export const fetchCategoriesAction = () => {
   return (dispatch, getState) => {
     const { product } = getState();
     
     // Eğer kategoriler zaten yüklenmişse tekrar istek atma
-    if (product.categories && product.categories.length > 0) return;
+    if (product?.categories && product.categories.length > 0) return;
 
     dispatch(setFetchState('FETCHING'));
 
     API.get('/categories')
       .then((res) => {
-        dispatch(setCategories(res.data));
+        const categoriesData = Array.isArray(res.data) ? res.data : (res.data?.categories || []);
+        dispatch(setCategories(categoriesData));
         dispatch(setFetchState('FETCHED'));
       })
       .catch((err) => {
@@ -30,19 +31,23 @@ export const fetchCategoriesAction = () => {
   };
 };
 
-// ================= T15: FETCH PRODUCTS WITH PARAMS & PAGINATION =================
 export const fetchProductsAction = (category = null, filter = '', sort = '', limit = 25, offset = 0) => {
   return (dispatch) => {
     dispatch(setFetchState('FETCHING'));
     const params = { limit, offset };
-    if (category !== null && category !== undefined) params.category = category;
+    if (category !== null && category !== undefined && category !== '') params.category = category;
     if (filter) params.filter = filter;
     if (sort) params.sort = sort;
 
     API.get('/products', { params })
       .then((res) => {
-        const productsList = Array.isArray(res.data) ? res.data : (res.data.products || []);
-        const totalCount = Array.isArray(res.data) ? productsList.length : (res.data.total || productsList.length);
+        const productsList = Array.isArray(res.data) 
+          ? res.data 
+          : (res.data?.products || (res.data?.content ? res.data.content : []));
+          
+        const totalCount = Array.isArray(res.data) 
+          ? productsList.length 
+          : (res.data?.total ?? res.data?.totalElements ?? productsList.length);
 
         dispatch(setProductList(productsList));
         dispatch(setTotal(totalCount));
@@ -55,17 +60,19 @@ export const fetchProductsAction = (category = null, filter = '', sort = '', lim
   };
 };
 
-// T16 için tekil ürünü store'a yazacak action creator
-export const setProduct = (product) => ({ type: 'SET_PRODUCT', payload: product });
-
-// ================= T16: FETCH SINGLE PRODUCT BY ID =================
 export const fetchProductByIdAction = (productId) => {
   return (dispatch) => {
+    if (!productId) {
+      dispatch(setFetchState('FAILED'));
+      return;
+    }
+
     dispatch(setFetchState('FETCHING'));
 
     API.get(`/products/${productId}`)
       .then((res) => {
-        dispatch(setProduct(res.data));
+        const productData = Array.isArray(res.data) ? res.data[0] : res.data;
+        dispatch(setProduct(productData));
         dispatch(setFetchState('FETCHED'));
       })
       .catch((err) => {

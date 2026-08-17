@@ -1,6 +1,5 @@
 import { API } from '../../api/api';
 
-// MD5 Hashing fonksiyonu (Gravatar için saf JS)
 function md5(string) {
   if (!string) return '';
   function RotateLeft(lValue, iShiftBits) {
@@ -127,11 +126,17 @@ export const setRoles = (roles) => ({ type: 'SET_ROLES', payload: roles });
 export const setTheme = (theme) => ({ type: 'SET_THEME', payload: theme });
 export const setLanguage = (lang) => ({ type: 'SET_LANGUAGE', payload: lang });
 
-// Thunk Action Creator: Rollerr çeker
+export const logoutUserAction = () => {
+  localStorage.removeItem('token');
+  sessionStorage.removeItem('token');
+  delete API.defaults.headers.common['Authorization'];
+  return { type: 'LOGOUT_USER' };
+};
+
 export const fetchRolesAction = () => {
   return (dispatch, getState) => {
     const { client } = getState();
-    if (client.roles && client.roles.length > 0) return;
+    if (client?.roles && client.roles.length > 0) return;
 
     API.get('/roles')
       .then((res) => {
@@ -143,7 +148,6 @@ export const fetchRolesAction = () => {
   };
 };
 
-// ================= T10: LOGIN THUNK ACTION =================
 export const loginUserAction = (credentials, rememberMe, onSuccess, onError) => {
   return (dispatch) => {
     return API.post('/login', credentials)
@@ -154,21 +158,22 @@ export const loginUserAction = (credentials, rememberMe, onSuccess, onError) => 
           throw new Error('Invalid email or password!');
         }
 
-        // Gravatar Avatar URL
         if (userData.email) {
           const emailHash = md5(userData.email);
           userData.avatarUrl = `https://www.gravatar.com/avatar/${emailHash}?d=identicon`;
         }
 
-        // KRİTİK GARANTİ: LocalStorage'a token yazıyoruz
-        const token = userData.token || 'mock-json-server-token-customer-123456';
-        localStorage.setItem('token', token);
+        
+        const token = userData.token || 'dummy-jwt-token';
+        if (rememberMe) {
+          localStorage.setItem('token', token);
+        } else {
+          sessionStorage.setItem('token', token);
+          localStorage.setItem('token', token);
+        }
         userData.token = token;
 
-        // Redux store'u güncelle
         dispatch(setUser(userData));
-
-        // Authorization header'ı güncelle
         API.defaults.headers.common['Authorization'] = token;
 
         if (onSuccess) onSuccess();
@@ -182,11 +187,12 @@ export const loginUserAction = (credentials, rememberMe, onSuccess, onError) => 
   };
 };
 
-// ================= T11: AUTO LOGIN BY TOKEN =================
 export const verifyTokenAction = () => {
   return (dispatch) => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
     if (!token) return;
+
+    API.defaults.headers.common['Authorization'] = token;
 
     API.get('/verify')
       .then((res) => {
@@ -197,12 +203,30 @@ export const verifyTokenAction = () => {
             const emailHash = md5(userData.email);
             userData.avatarUrl = `https://www.gravatar.com/avatar/${emailHash}?d=identicon`;
           }
+          if (!userData.token) {
+            userData.token = token;
+          }
           dispatch(setUser(userData));
           API.defaults.headers.common['Authorization'] = token;
         }
       })
       .catch((err) => {
-        console.warn('Verify token local pas geçildi:', err);
+        console.warn('Verify token failed or pending:', err);
+      });
+  };
+};
+
+export const signupUserAction = (formData, onSuccess, onError) => {
+  return (dispatch) => {
+    return API.post('/signup', formData)
+      .then((res) => {
+        if (onSuccess) onSuccess(res.data);
+        return res.data;
+      })
+      .catch((err) => {
+        const errorMsg = err.response?.data?.message || err.message || 'Signup failed!';
+        if (onError) onError(errorMsg);
+        throw err;
       });
   };
 };

@@ -2,7 +2,7 @@ import axios from 'axios';
 
 
 export const API = axios.create({
-  baseURL: 'https://ecommerce-ey-backend.onrender.com',
+  baseURL: "https://ecommerce-backend-l37z.onrender.com",
             
 });
 

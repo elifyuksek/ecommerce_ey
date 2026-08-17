@@ -43,12 +43,15 @@ export default function App() {
   }, []);
 
   const navigateToProduct = (productData) => {
+    if (!productData || !productData.id) return;
+
     setSelectedProduct(productData);
     
     const genderPath = productData.gender === 'k' ? 'kadin' : 'erkek';
-    
     const categoryPath = 'product'; 
-    const productSlug = productData.name
+    const productName = productData.name || 'urun';
+
+    const productSlug = String(productName)
       .toLowerCase()
       .replace(/ı/g, 'i')
       .replace(/ğ/g, 'g')
@@ -57,9 +60,12 @@ export default function App() {
       .replace(/ö/g, 'o')
       .replace(/ç/g, 'c')
       .replace(/[^a-z0-9\s-]/g, '') 
-      .replace(/\s+/g, '-');
+      .trim()
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-');
 
-    const productUrl = `/shop/${genderPath}/${categoryPath}/${productData.category_id}/${productSlug}/${productData.id}`;
+    const categoryId = productData.category_id || productData.categoryId || 1;
+    const productUrl = `/shop/${genderPath}/${categoryPath}/${categoryId}/${productSlug}/${productData.id}`;
     
     window.history.pushState({}, '', productUrl);
     window.dispatchEvent(new Event('navigationChange'));
@@ -97,7 +103,7 @@ export default function App() {
 
     const isProductDetail = /^\/shop\/[a-z]+\/[a-z0-9-]+\/\d+\/[a-z0-9-]+\/\d+$/.test(currentPath);
     if (isProductDetail) {
-      return <ProductDetailPage onProductSelect={navigateToProduct} />;
+      return <ProductDetailPage onProductSelect={navigateToProduct} selectedProduct={selectedProduct} />;
     }
     
     if (currentPath === '/shop' || currentPath.startsWith('/shop/')) {

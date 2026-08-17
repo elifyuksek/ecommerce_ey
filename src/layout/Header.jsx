@@ -7,12 +7,14 @@ export default function Header() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
 
-  const user = useSelector((state) => state.client.user);
-  const isLoggedIn = user && user.token;
-  const categories = useSelector((state) => state.product.categories) || [];
+  const user = useSelector((state) => state.client?.user);
+  const isLoggedIn = Boolean(user && user.token);
+  const categories = useSelector((state) => state.product?.categories) || [];
   const cart = useSelector((state) => state.shoppingCart?.cart) || [];
+  const favorites = useSelector((state) => state.shoppingCart?.favorites) || [];
 
   const totalCartCount = cart.reduce((total, item) => total + item.count, 0);
+  const totalFavoritesCount = favorites.length;
 
   const womenCategories = categories.filter(
     (c) => c.gender === 'k' && !['ayakkabi', 'ceket', 'etek', 'kazak', 'pantalon'].includes(c.code?.split(':')[1]?.toLowerCase())
@@ -45,6 +47,16 @@ export default function Header() {
 
     navigateTo(`/shop/${genderPath}/${categoryPath}/${categoryId}`);
     setIsDropdownOpen(false);
+  };
+
+  const getProductImage = (product) => {
+    if (!product) return 'https://via.placeholder.com/100x120?text=No+Image';
+    if (product.images && product.images.length > 0) {
+      const first = product.images[0];
+      if (typeof first === 'string') return first;
+      return first.url || first.imageUrl || first.image_url || 'https://via.placeholder.com/100x120?text=No+Image';
+    }
+    return product.image || product.imageUrl || product.image_url || 'https://via.placeholder.com/100x120?text=No+Image';
   };
 
   return (
@@ -151,9 +163,13 @@ export default function Header() {
             >
               <div className="hidden md:flex items-center gap-2 text-[#252B42] cursor-pointer select-none">
                 <img 
-                  src={user.avatarUrl || `https://www.gravatar.com/avatar/${btoa(user.email)}?d=mp`} 
-                  alt={user.name} 
+                  src={user.avatarUrl || `https://www.gravatar.com/avatar/${user.email ? btoa(user.email) : ''}?d=identicon`} 
+                  alt={user.name || 'User'} 
                   className="w-8 h-8 rounded-full border border-gray-200 object-cover"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = 'https://via.placeholder.com/32?text=U';
+                  }}
                 />
                 <span className="font-bold text-sm tracking-wide text-[#252B42] hover:text-[#23A6F0] transition-colors">
                   {user.name} <span className="text-[10px] inline-block align-middle ml-0.5">▼</span>
@@ -172,6 +188,7 @@ export default function Header() {
                   <button 
                     onClick={() => {
                       localStorage.removeItem('token');
+                      sessionStorage.removeItem('token');
                       window.location.href = '/login';
                     }}
                     className="w-full text-left px-4 py-2.5 text-red-500 hover:bg-red-50/30 transition-colors cursor-pointer flex items-center gap-2"
@@ -211,6 +228,7 @@ export default function Header() {
               onMouseLeave={() => setIsCartOpen(false)}
             >
               <button 
+                onClick={() => navigateTo('/cart')}
                 className="p-1 text-[#23A6F0] hover:opacity-75 transition-opacity flex items-center gap-1 cursor-pointer focus:outline-none" 
                 aria-label="Cart"
               >
@@ -242,26 +260,28 @@ export default function Header() {
                     <>
                       <div className="flex flex-col gap-3 max-h-[240px] overflow-y-auto pr-1 scrollbar-thin">
                         {cart.map((item) => {
-                          const imgUrl = item.product.images && item.product.images.length > 0 
-                            ? item.product.images[0].url 
-                            : (item.product.image || 'https://via.placeholder.com/60');
+                          const imgUrl = getProductImage(item.product);
 
                           return (
-                            <div key={item.product.id} className="flex gap-3 items-start border-b border-gray-100 pb-3 hover:bg-gray-50 p-1 rounded transition-colors">
+                            <div key={item.product?.id || Math.random()} className="flex gap-3 items-start border-b border-gray-100 pb-3 hover:bg-gray-50 p-1 rounded transition-colors">
                               <img 
                                 src={imgUrl} 
-                                alt={item.product.name} 
-                                className="w-16 h-20 object-cover rounded border border-gray-200"
+                                alt={item.product?.name || 'Ürün'} 
+                                className="w-16 h-20 object-cover rounded border border-gray-200 flex-shrink-0"
+                                onError={(e) => {
+                                  e.target.onerror = null;
+                                  e.target.src = 'https://via.placeholder.com/100x120?text=No+Image';
+                                }}
                               />
                               <div className="flex-grow flex flex-col gap-1">
                                 <h4 className="text-xs font-bold text-[#252B42] line-clamp-2 leading-tight text-left">
-                                  {item.product.name}
+                                  {item.product?.name}
                                 </h4>
                                 <span className="text-[11px] text-gray-400 font-semibold text-left">
                                   Adet: {item.count}
                                 </span>
                                 <span className="text-sm font-bold text-[#23A6F0] text-left">
-                                  ${(item.product.price * item.count).toFixed(2)}
+                                  ${((item.product?.price || 0) * item.count).toFixed(2)}
                                 </span>
                               </div>
                             </div>
@@ -289,9 +309,15 @@ export default function Header() {
               )}
             </div>
 
-            <button className="p-1 hover:opacity-70 transition-opacity cursor-pointer text-[#23A6F0]" aria-label="Favorites">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
-              <span className="text-xs font-normal text-[#23A6F0] ml-0.5">(0)</span>
+            <button 
+              onClick={() => navigateTo('/cart')}
+              className="p-1 hover:opacity-70 transition-opacity cursor-pointer text-[#23A6F0] flex items-center gap-0.5" 
+              aria-label="Favorites"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill={totalFavoritesCount > 0 ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+              </svg>
+              <span className="text-xs font-bold text-[#23A6F0] ml-0.5">({totalFavoritesCount})</span>
             </button>
           </div>
           
@@ -322,9 +348,13 @@ export default function Header() {
               <div className="flex flex-col items-center gap-3 pt-4 border-t border-gray-100 w-full justify-center text-xs font-bold">
                 <div className="flex items-center gap-2">
                   <img 
-                    src={user.avatarUrl || `https://www.gravatar.com/avatar/${btoa(user.email)}?d=mp`} 
-                    alt={user.name} 
+                    src={user.avatarUrl || `https://www.gravatar.com/avatar/${user.email ? btoa(user.email) : ''}?d=identicon`} 
+                    alt={user.name || 'User'} 
                     className="w-8 h-8 rounded-full border border-gray-200 object-cover"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = 'https://via.placeholder.com/32?text=U';
+                    }}
                   />
                   <span className="font-bold text-[#252B42] text-sm">{user.name}</span>
                 </div>

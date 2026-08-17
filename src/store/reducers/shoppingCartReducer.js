@@ -1,5 +1,16 @@
+const loadInitialState = () => {
+  try {
+    const savedFavorites = localStorage.getItem('favorites');
+    return savedFavorites ? JSON.parse(savedFavorites) : [];
+  } catch (error) {
+    console.error('Error loading favorites from localStorage:', error);
+    return [];
+  }
+};
+
 const initialState = {
   cart: [],                      
+  favorites: loadInitialState(), 
   payment: {},                   
   address: {},                   
   addressList: [],               
@@ -67,6 +78,28 @@ export const shoppingCartReducer = (state = initialState, action) => {
         cart: [], 
         selectedCard: null
       };
+
+    case 'TOGGLE_FAVORITE': {
+      const product = action.payload;
+      const isAlreadyFavorite = state.favorites.some(
+        (item) => String(item.id) === String(product.id)
+      );
+
+      const updatedFavorites = isAlreadyFavorite
+        ? state.favorites.filter((item) => String(item.id) !== String(product.id))
+        : [...state.favorites, product];
+
+      try {
+        localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+      } catch (error) {
+        console.error('Error saving favorites to localStorage:', error);
+      }
+
+      return {
+        ...state,
+        favorites: updatedFavorites
+      };
+    }
 
     case 'SET_ADDRESS_LIST':
       return {
